@@ -1,19 +1,18 @@
 #!/usr/bin/env python
 
 """
-    DragonPy - Dragon 32 emulator in Python
-    =======================================
+    DragonLib
+    =========
 
-    :copyleft: 2014 by the DragonPy team, see AUTHORS for more details.
+    :copyleft: 2014 by the DragonLib team, see AUTHORS for more details.
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 
 from __future__ import absolute_import, division, print_function
 
-
 import unittest
 
-from dragonpy.tests.test_base import TextTestRunner2
+from dragonlib.utils.unittest_utils import TextTestRunner2
 
 
 if __name__ == "__main__":

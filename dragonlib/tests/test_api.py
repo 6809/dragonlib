@@ -12,8 +12,6 @@
 
 from __future__ import absolute_import, division, print_function
 
-
-import pprint
 import sys
 import unittest
 import logging
@@ -21,8 +19,8 @@ import logging
 from dragonlib.api import Dragon32API
 from dragonlib.core.basic import BasicLine
 from dragonlib.tests.test_base import BaseTestCase
+from dragonlib.utils.unittest_utils import TextTestRunner2
 from dragonlib.utils.logging_utils import pformat_program_dump
-from dragonpy.tests.test_base import TextTestRunner2
 
 
 log = logging.getLogger(__name__)

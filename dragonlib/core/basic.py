@@ -20,7 +20,8 @@ from dragonlib.utils import six
 from dragonlib.utils.iter_utils import list_replace
 from dragonlib.utils.logging_utils import pformat_byte_hex_list, \
     log_program_dump
-from dragonpy.utils.byte_word_values import word2bytes
+from dragonlib.utils.byte_word_values import word2bytes
+
 
 log = logging.getLogger(__name__)
 
@@ -525,7 +526,6 @@ def _test_renum():
 
 
 def _test_reformat():
-    import os
     from dragonlib.utils.logging_utils import setup_logging
 
     setup_logging(

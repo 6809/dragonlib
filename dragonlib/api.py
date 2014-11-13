@@ -141,6 +141,20 @@ class CoCoAPI(Dragon32API):
     MACHINE_NAME = "CoCo"
     BASIC_TOKENS = COCO_BASIC_TOKENS
 
+
+def example_renum_ascii_listing():
+    api = Dragon32API()
+
+    ascii_listing="\n".join([
+        '1 PRINT "LINE 10"',
+        '2 PRINT "LINE 20"',
+        '3 GOTO 1',
+    ])
+    print(
+        api.renum_ascii_listing(ascii_listing)
+    )
+
+
 if __name__ == '__main__':
     import os
     from dragonlib.utils.logging_utils import setup_logging
@@ -155,16 +169,5 @@ if __name__ == '__main__':
         level=99
     )
 
-    api = Dragon32API()
+    example_renum_ascii_listing()
 
-    filepath = os.path.join(os.path.abspath(os.path.dirname(__file__)),
-        # "..", "BASIC examples", "hex_view01.bas"
-        "..", "BASIC games", "INVADER.bas"
-    )
-
-    with open(filepath, "r") as f:
-        listing_ascii = f.read()
-
-    print(
-        api.reformat_ascii_listing(listing_ascii)
-    )
