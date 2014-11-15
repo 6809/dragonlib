@@ -141,8 +141,12 @@ def log_program_dump(ram_content, level=99):
     log.log(level, msg)
 
 
-
-#------------------------------------------------------------------------------
+def log_bytes(data, msg="%s", level=logging.DEBUG):
+    log.log(level, msg,
+        " ".join(
+            ["%02X" % ord(item) for item in data]
+        )
+    )
 
 
 def test_run():
