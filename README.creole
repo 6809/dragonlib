@@ -16,7 +16,7 @@ Used in:
 
 == History
 
-* 15.11.2014 - v0.1.1 - Add {{{api.bin2bas(bin)}}} for converting Dragon DOS Binary to ASCII listing
+* 15.11.2014 - v0.1.1 - Add {{{api.bin2bas()}}} and {{{api.bas2bin()}}} for Dragon DOS Binary <-> ASCII listing
 * TODO: Add old history ;)
 
 == Links:

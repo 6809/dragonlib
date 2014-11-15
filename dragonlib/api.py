@@ -20,7 +20,7 @@ from dragonlib.core.basic import BasicListing, RenumTool, BasicTokenUtil,\
 from dragonlib.core.basic_parser import BASICParser
 from dragonlib.core.binary_files import BinaryFile
 from dragonlib.dragon32.basic_tokens import DRAGON32_BASIC_TOKENS
-
+from dragonlib.utils.logging_utils import log_bytes
 
 log=logging.getLogger(__name__)
 
@@ -120,7 +120,29 @@ class BaseAPI(object):
 
         return "\n".join(ascii_lines)
 
-    def bin2bas(self, bin):
+    def bas2bin(self, basic_program_ascii, load_address=None, exec_address=None):
+
+        # FIXME: load_address/exec_address == program_start ?!?!
+        if load_address is None:
+            load_address = self.DEFAULT_PROGRAM_START
+
+        if exec_address is None:
+            exec_address = self.DEFAULT_PROGRAM_START
+
+        tokenised_dump = self.ascii_listing2program_dump(basic_program_ascii, load_address)
+
+        tokenised_dump = "".join([chr(byte) for byte in tokenised_dump]) # FIXME
+
+        binary_file = BinaryFile()
+        binary_file.load_tokenised_dump(tokenised_dump,
+            load_address=load_address,
+            exec_address=exec_address,
+        )
+        data = binary_file.dump_DragonDosBinary()
+        return data
+
+
+    def bin2bas(self, data):
         """
         convert binary files to a ASCII basic string.
         Supported are:
@@ -131,18 +153,19 @@ class BaseAPI(object):
         http://archive.worldofdragon.org/phpBB3/viewtopic.php?f=8&t=348&p=10139#p10139
         """
         binary_file = BinaryFile()
-        binary_file.load_from_bin(bin)
+        binary_file.load_from_bin(data)
 
         if binary_file.file_type != 0x01:
             log.error("ERROR: file type $%02X is not $01 (tokenised BASIC)!", binary_file.file_type)
 
         dump = [ord(byte) for byte in binary_file.data] # FIXME
 
-        return self.program_dump2ascii_lines(dump,
+        ascii_lines = self.program_dump2ascii_lines(dump,
             # FIXME:
             #program_start=bin.exec_address
             program_start=binary_file.load_address
         )
+        return "\n".join(ascii_lines)
 
 
 
@@ -188,11 +211,15 @@ def test_bin2bas():
     api = Dragon32API()
 
     with open(os.path.expanduser("~/DragonEnvPy3/DwRoot/AUTOLOAD.DWL"), "rb") as f:
-        bin=f.read()
+        data1=f.read()
 
-    ascii_listing=api.bin2bas(bin)
-    for line in ascii_listing:
-        print(line)
+    ascii_listing=api.bin2bas(data1)
+    print(ascii_listing)
+
+    data2 = api.bas2bin(ascii_listing, load_address=0x1e01, exec_address=0x1e01)
+
+    log_bytes(data1, "data1: %s", level=logging.CRITICAL)
+    log_bytes(data2, "data2: %s", level=logging.CRITICAL)
 
 
 if __name__ == '__main__':
@@ -201,8 +228,8 @@ if __name__ == '__main__':
 
     setup_logging(
 #         level=1 # hardcore debug ;)
-        level=10  # DEBUG
-#         level=20  # INFO
+#         level=10  # DEBUG
+        level=20  # INFO
 #         level=30  # WARNING
 #         level=40 # ERROR
 #         level=50 # CRITICAL/FATAL

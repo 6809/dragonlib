@@ -23,12 +23,26 @@ log = logging.getLogger(__name__)
 
 class BinaryFile(object):
     def __init__(self):
+        self.file_type = None
         self.load_address = None
         self.length = None
         self.exec_address = None
         self.data = None
 
-    def load_DragonDosBinary(self, bin, strip_padding=True):
+    def dump_DragonDosBinary(self):
+        header = struct.pack(">BBHHHB",
+            0x55,
+            self.file_type,
+            self.load_address,
+            self.length,
+            self.exec_address,
+            0xAA,
+        )
+        log_bytes(header, "Dragon DOS binary header in hex: %s", level=logging.DEBUG)
+        log_bytes(self.data, "data in hex: %s", level=logging.DEBUG)
+        return header + self.data
+
+    def load_DragonDosBinary(self, data, strip_padding=True):
         """
         Dragon DOS Binary Format
 
@@ -45,7 +59,7 @@ class BinaryFile(object):
         """
         log.debug("Load Dragon DOS Binary Format.")
 
-        meta_data = struct.unpack(">BBHHHBB", bin[:10])
+        meta_data = struct.unpack(">BBHHHB", data[:9])
 
         machine_type = meta_data[0]
         if machine_type != 0x55:
@@ -60,9 +74,9 @@ class BinaryFile(object):
             log.error("ERROR: Terminator byte is $%02X but should be $AA!", terminator)
 
         if strip_padding:
-            self.data = bin[9:self.length + 7]
+            self.data = data[9:self.length + 7]
         else:
-            self.data = bin[9:]
+            self.data = data[9:]
 
         log.debug(
             "File type: $%02X Load Address: $%04X Exec Address: $%04X Length: %iBytes",
@@ -73,7 +87,7 @@ class BinaryFile(object):
 
         log_bytes(self.data, "data in hex: %s", level=logging.DEBUG)
 
-    def load_from_bin(self, bin):
+    def load_from_bin(self, data):
         """
         convert binary files to a ASCII basic string.
         Supported are:
@@ -83,11 +97,18 @@ class BinaryFile(object):
         see:
         http://archive.worldofdragon.org/phpBB3/viewtopic.php?f=8&t=348&p=10139#p10139
         """
-        machine_type = struct.unpack("B", bin[0])[0]
+        machine_type = struct.unpack("B", data[0])[0]
         if machine_type == 0x55:
             # Dragon DOS Binary Format
-            self.load_DragonDosBinary(bin)
+            self.load_DragonDosBinary(data)
         elif machine_type == 0x00:
             raise NotImplementedError("CoCo DECB (Disk Extended Color BASIC) Format not supported, yet.")
         else:
             raise NotImplementedError("ERROR: Format $%02X unknown." % machine_type)
+
+    def load_tokenised_dump(self, tokenised_dump, load_address, exec_address):
+        self.file_type = 0x01
+        self.load_address = load_address
+        self.length = len(tokenised_dump)
+        self.exec_address = exec_address
+        self.data = tokenised_dump
