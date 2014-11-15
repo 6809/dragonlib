@@ -55,7 +55,7 @@ class BaseAPI(object):
             log.critical("No parsed lines %s from %s ?!?" % (
                 repr(parsed_lines), repr(basic_program_ascii)
             ))
-        log.info("Parsed BASIC: %s", repr(parsed_lines))
+        log.debug("Parsed BASIC: %s", repr(parsed_lines))
         return parsed_lines
 
     def ascii_listing2basic_lines(self, basic_program_ascii, program_start):
@@ -229,8 +229,8 @@ if __name__ == '__main__':
     setup_logging(
 #         level=1 # hardcore debug ;)
 #         level=10  # DEBUG
-        level=20  # INFO
-#         level=30  # WARNING
+#         level=20  # INFO
+        level=30  # WARNING
 #         level=40 # ERROR
 #         level=50 # CRITICAL/FATAL
 #         level=99

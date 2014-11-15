@@ -45,7 +45,7 @@ class BasicTokenUtil(object):
             result = self.basic_token_dict[value]
         except KeyError:
             if value > 0xff:
-                log.critical("ERROR: Token $%04x is not in BASIC_TOKENS!", value)
+                log.info("ERROR: Token $%04x is not in BASIC_TOKENS!", value)
                 return ""
             result = chr(value)
         if six.PY2:
@@ -76,9 +76,9 @@ class BasicTokenUtil(object):
         """
         TODO: replace no tokens in comments and strings
         """
-        log.critical(repr(ascii_code))
+        log.info(repr(ascii_code))
         parts = self.regex.split(ascii_code)
-        log.critical(repr(parts))
+        log.info(repr(parts))
         tokens = []
         for part in parts:
             if not part:
@@ -86,7 +86,7 @@ class BasicTokenUtil(object):
 
             if part in self.ascii2token_dict:
                 new_token = self.ascii2token_dict[part]
-                log.critical("\t%r -> %x", part, new_token)
+                log.info("\t%r -> %x", part, new_token)
                 if new_token > 0xff:
                     tokens.append(new_token >> 8)
                     tokens.append(new_token & 0xff)
@@ -277,7 +277,7 @@ class BasicLine(object):
         return "%r: %s" % (self.get_content(), " ".join(["$%02x" % t for t in self.line_code]))
 
     def log_line(self):
-        log.critical("%r:\n\t%s",
+        log.debug("%r:\n\t%s",
             self.get_content(),
             "\n\t".join(self.token_util.pformat_tokens(self.line_code))
         )
@@ -291,17 +291,17 @@ class BasicListing(object):
         if basic_lines is None:
             basic_lines = []
 
-        log.critical("progam start $%04x", program_start)
+        log.info("progam start $%04x", program_start)
         try:
             next_address = (dump[0] << 8) + dump[1]
         except IndexError as err:
-            log.critical("Can't get address: %s", err)
+            log.info("Can't get address: %s", err)
             return basic_lines
 
-        log.critical("next_address: $%04x", next_address)
+        log.info("next_address: $%04x", next_address)
         if next_address == 0x0000:
             # program end
-            log.critical("return: %s", repr(basic_lines))
+            log.info("return: %s", repr(basic_lines))
             return basic_lines
 
         assert next_address > program_start, "Next address $%04x not bigger than program start $%04x ?!?" % (
@@ -309,11 +309,11 @@ class BasicListing(object):
         )
 
         line_number = (dump[2] << 8) + dump[3]
-        log.critical("line_number: %i", line_number)
+        log.info("line_number: %i", line_number)
         length = next_address - program_start
-        log.critical("length: %i", length)
+        log.info("length: %i", length)
         tokens = dump[4:length]
-        log.critical("tokens:\n\t%s", "\n\t".join(self.token_util.pformat_tokens(tokens)))
+        log.debug("tokens:\n\t%s", "\n\t".join(self.token_util.pformat_tokens(tokens)))
 
         basic_line = BasicLine(self.token_util)
         basic_line.token_load(line_number, tokens)
@@ -408,7 +408,7 @@ class BasicListing(object):
 
     def program_dump2ascii_lines(self, dump, program_start):
         basic_lines = self.dump2basic_lines(dump, program_start)
-        log.critical("basic_lines: %s", repr(basic_lines))
+        log.info("basic_lines: %s", repr(basic_lines))
         ascii_lines = []
         for line in basic_lines:
             ascii_lines.append(line.get_content())
@@ -475,7 +475,7 @@ class RenumTool(object):
         return new_number
 
     def renum_inline(self, matchobj):
-#         log.critical(matchobj.groups())
+#         log.info(matchobj.groups())
         old_numbers = matchobj.group("no")
         if old_numbers[-1] == " ":
             # e.g.: space before comment: ON X GOTO 1,2 ' Comment
