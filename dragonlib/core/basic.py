@@ -277,7 +277,7 @@ class BasicLine(object):
         return "%r: %s" % (self.get_content(), " ".join(["$%02x" % t for t in self.line_code]))
 
     def log_line(self):
-        log.debug("%r:\n\t%s",
+        log.critical("%r:\n\t%s",
             self.get_content(),
             "\n\t".join(self.token_util.pformat_tokens(self.line_code))
         )
@@ -291,17 +291,17 @@ class BasicListing(object):
         if basic_lines is None:
             basic_lines = []
 
-        log.info("progam start $%04x", program_start)
+        log.debug("progam start $%04x", program_start)
         try:
             next_address = (dump[0] << 8) + dump[1]
         except IndexError as err:
-            log.info("Can't get address: %s", err)
+            log.debug("Can't get address: %s", err)
             return basic_lines
 
-        log.info("next_address: $%04x", next_address)
+        log.debug("next_address: $%04x", next_address)
         if next_address == 0x0000:
             # program end
-            log.info("return: %s", repr(basic_lines))
+            log.debug("return: %s", repr(basic_lines))
             return basic_lines
 
         assert next_address > program_start, "Next address $%04x not bigger than program start $%04x ?!?" % (
@@ -309,9 +309,9 @@ class BasicListing(object):
         )
 
         line_number = (dump[2] << 8) + dump[3]
-        log.info("line_number: %i", line_number)
+        log.debug("line_number: %i", line_number)
         length = next_address - program_start
-        log.info("length: %i", length)
+        log.debug("length: %i", length)
         tokens = dump[4:length]
         log.debug("tokens:\n\t%s", "\n\t".join(self.token_util.pformat_tokens(tokens)))
 
@@ -475,7 +475,7 @@ class RenumTool(object):
         return new_number
 
     def renum_inline(self, matchobj):
-#         log.info(matchobj.groups())
+#         log.critical(matchobj.groups())
         old_numbers = matchobj.group("no")
         if old_numbers[-1] == " ":
             # e.g.: space before comment: ON X GOTO 1,2 ' Comment
