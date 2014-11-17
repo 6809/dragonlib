@@ -84,6 +84,8 @@ def setup_logging(level, logger_name=None, handler=None, log_formatter=None):
         root_logger.debug("Log to handler: %s", repr(handler))
     logger.handlers = (handler,)
 
+    log.log(level, "Set logging to level %i %s", level, logging.getLevelName(level))
+
 
 def log_memory_dump(memory, start, end, mem_info, level=99):
     log.log(level, "Memory dump from $%04x to $%04x:", start, end)
