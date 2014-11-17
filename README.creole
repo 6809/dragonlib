@@ -14,6 +14,10 @@ Used in:
 {{{DwLoadServer}}} - DWLOAD server implemented in Python
 * https://github.com/DWLOAD/DwLoadServer
 
+== History
+
+* 15.11.2014 - v0.1.1 - Add {{{api.bin2bas(bin)}}} for converting Dragon DOS Binary to ASCII listing
+* TODO: Add old history ;)
 
 == Links:
 

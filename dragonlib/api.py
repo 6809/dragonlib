@@ -6,19 +6,21 @@
     =======================================
 
     :created: 2014 by Jens Diemer - www.jensdiemer.de
-    :copyleft: 2014 by the DragonPy team, see AUTHORS for more details.
+    :copyleft: 2014 by the DragonLib team, see AUTHORS for more details.
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 
 from __future__ import absolute_import, division, print_function
 
+import logging
 
 from dragonlib.CoCo.basic_tokens import COCO_BASIC_TOKENS
 from dragonlib.core.basic import BasicListing, RenumTool, BasicTokenUtil,\
     BasicLine
 from dragonlib.core.basic_parser import BASICParser
+from dragonlib.core.binary_files import BinaryFile
 from dragonlib.dragon32.basic_tokens import DRAGON32_BASIC_TOKENS
-import logging
+
 
 log=logging.getLogger(__name__)
 
@@ -118,6 +120,33 @@ class BaseAPI(object):
 
         return "\n".join(ascii_lines)
 
+    def bin2bas(self, bin):
+        """
+        convert binary files to a ASCII basic string.
+        Supported are:
+            * Dragon DOS Binary Format
+            * TODO: CoCo DECB (Disk Extended Color BASIC) Format
+
+        see:
+        http://archive.worldofdragon.org/phpBB3/viewtopic.php?f=8&t=348&p=10139#p10139
+        """
+        binary_file = BinaryFile()
+        binary_file.load_from_bin(bin)
+
+        if binary_file.file_type != 0x01:
+            log.error("ERROR: file type $%02X is not $01 (tokenised BASIC)!", binary_file.file_type)
+
+        dump = [ord(byte) for byte in binary_file.data] # FIXME
+
+        return self.program_dump2ascii_lines(dump,
+            # FIXME:
+            #program_start=bin.exec_address
+            program_start=binary_file.load_address
+        )
+
+
+
+
 
 class Dragon32API(BaseAPI):
     CONFIG_NAME = DRAGON32
@@ -155,19 +184,31 @@ def example_renum_ascii_listing():
     )
 
 
+def test_bin2bas():
+    api = Dragon32API()
+
+    with open(os.path.expanduser("~/DragonEnvPy3/DwRoot/AUTOLOAD.DWL"), "rb") as f:
+        bin=f.read()
+
+    ascii_listing=api.bin2bas(bin)
+    for line in ascii_listing:
+        print(line)
+
+
 if __name__ == '__main__':
     import os
     from dragonlib.utils.logging_utils import setup_logging
 
     setup_logging(
-#        level=1 # hardcore debug ;)
-#         level=10  # DEBUG
+#         level=1 # hardcore debug ;)
+        level=10  # DEBUG
 #         level=20  # INFO
 #         level=30  # WARNING
 #         level=40 # ERROR
 #         level=50 # CRITICAL/FATAL
-        level=99
+#         level=99
     )
 
-    example_renum_ascii_listing()
+    # example_renum_ascii_listing()
+    test_bin2bas()
 
