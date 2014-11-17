@@ -158,7 +158,10 @@ class BaseAPI(object):
         if binary_file.file_type != 0x01:
             log.error("ERROR: file type $%02X is not $01 (tokenised BASIC)!", binary_file.file_type)
 
-        dump = [ord(byte) for byte in binary_file.data] # FIXME
+        try: # FIXME
+            dump = [ord(byte) for byte in binary_file.data]
+        except TypeError:
+            dump = binary_file.data
 
         ascii_lines = self.program_dump2ascii_lines(dump,
             # FIXME:
