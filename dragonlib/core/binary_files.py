@@ -97,7 +97,8 @@ class BinaryFile(object):
         see:
         http://archive.worldofdragon.org/phpBB3/viewtopic.php?f=8&t=348&p=10139#p10139
         """
-        machine_type = struct.unpack("B", data[0])[0]
+        machine_type = content[0]
+        # machine_type = struct.unpack("B", bin[0])[0]
         if machine_type == 0x55:
             # Dragon DOS Binary Format
             self.load_DragonDosBinary(data)
@@ -105,7 +106,6 @@ class BinaryFile(object):
             raise NotImplementedError("CoCo DECB (Disk Extended Color BASIC) Format not supported, yet.")
         else:
             raise NotImplementedError("ERROR: Format $%02X unknown." % machine_type)
-
     def load_tokenised_dump(self, tokenised_dump, load_address, exec_address):
         self.file_type = 0x01
         self.load_address = load_address
