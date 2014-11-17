@@ -40,7 +40,8 @@ class BinaryFile(object):
         )
         log_bytes(header, "Dragon DOS binary header in hex: %s", level=logging.DEBUG)
         log_bytes(self.data, "data in hex: %s", level=logging.DEBUG)
-        return header + self.data
+        
+        return header + bytes(self.data, encoding="utf-8") # FIXME
 
     def load_DragonDosBinary(self, data, strip_padding=True):
         """
@@ -106,6 +107,7 @@ class BinaryFile(object):
             raise NotImplementedError("CoCo DECB (Disk Extended Color BASIC) Format not supported, yet.")
         else:
             raise NotImplementedError("ERROR: Format $%02X unknown." % machine_type)
+
     def load_tokenised_dump(self, tokenised_dump, load_address, exec_address):
         self.file_type = 0x01
         self.load_address = load_address
