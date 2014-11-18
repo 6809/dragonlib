@@ -23,13 +23,13 @@ log = logging.getLogger(__name__)
 
 class BinaryFile(object):
     def __init__(self):
-        self.file_type = None
+        self.file_type = None # $01 == BAS | $02 == BIN
         self.load_address = None
         self.length = None
         self.exec_address = None
         self.data = None
 
-    def dump_DragonDosBinary(self):
+    def get_header(self):
         header = struct.pack(">BBHHHB",
             0x55,
             self.file_type,
@@ -39,9 +39,12 @@ class BinaryFile(object):
             0xAA,
         )
         log_bytes(header, "Dragon DOS binary header in hex: %s", level=logging.DEBUG)
+        return header
+
+    def dump_DragonDosBinary(self):
         log_bytes(self.data, "data in hex: %s", level=logging.DEBUG)
-        
-        return header + bytes(self.data, encoding="utf-8") # FIXME
+        header = self.get_header()
+        return header + self.data
 
     def load_DragonDosBinary(self, data, strip_padding=True):
         """
