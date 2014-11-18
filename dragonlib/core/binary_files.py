@@ -98,7 +98,7 @@ class BinaryFile(object):
         see:
         http://archive.worldofdragon.org/phpBB3/viewtopic.php?f=8&t=348&p=10139#p10139
         """
-        machine_type = content[0]
+        machine_type = data[0]
         # machine_type = struct.unpack("B", bin[0])[0]
         if machine_type == 0x55:
             # Dragon DOS Binary Format
