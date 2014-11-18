@@ -144,10 +144,10 @@ def log_program_dump(ram_content, level=99):
 
 
 def log_bytes(data, msg="%s", level=logging.DEBUG):
-    try:
+    if six.PY3: # iterate over bytes result in intergers in Py3 !
+        data = " ".join(["%02X" % item for item in data])
+    else:
         data = " ".join(["%02X" % ord(item) for item in data])
-    except TypeError:
-        data = repr(data)
     log.log(level, msg, data)
 
 
