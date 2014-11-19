@@ -16,6 +16,7 @@ Used in:
 
 == History
 
+* 19.11.2014 - v0.1.2 - Bugfix {{{api.bin2bas()}}} and {{{api.bas2bin()}}}
 * 15.11.2014 - v0.1.1 - Add {{{api.bin2bas()}}} and {{{api.bas2bin()}}} for Dragon DOS Binary <-> ASCII listing
 * TODO: Add old history ;)
 
