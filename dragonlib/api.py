@@ -20,6 +20,7 @@ from dragonlib.core.basic import BasicListing, RenumTool, BasicTokenUtil,\
 from dragonlib.core.basic_parser import BASICParser
 from dragonlib.core.binary_files import BinaryFile
 from dragonlib.dragon32.basic_tokens import DRAGON32_BASIC_TOKENS
+from dragonlib.utils import six
 from dragonlib.utils.logging_utils import log_bytes
 
 log=logging.getLogger(__name__)
@@ -80,7 +81,11 @@ class BaseAPI(object):
 
         basic_lines = self.ascii_listing2basic_lines(basic_program_ascii, program_start)
 
-        return self.listing.basic_lines2program_dump(basic_lines, program_start)          
+        program_dump=self.listing.basic_lines2program_dump(basic_lines, program_start)
+        assert isinstance(program_dump, six.binary_type), (
+            "is type: %s and not bytes/str: %s" % (type(program_dump), repr(program_dump))
+        )
+        return program_dump
 
     def pformat_tokens(self, tokens):
         """
@@ -130,17 +135,18 @@ class BaseAPI(object):
             exec_address = self.DEFAULT_PROGRAM_START
 
         tokenised_dump = self.ascii_listing2program_dump(basic_program_ascii, load_address)
-
-        tokenised_dump = "".join([chr(byte) for byte in tokenised_dump]) # FIXME
+        log.debug(type(tokenised_dump))
+        log.debug(repr(tokenised_dump))
+        log_bytes(tokenised_dump, msg="tokenised: %s")
 
         binary_file = BinaryFile()
         binary_file.load_tokenised_dump(tokenised_dump,
             load_address=load_address,
             exec_address=exec_address,
         )
+        binary_file.debug2log(level=logging.CRITICAL)
         data = binary_file.dump_DragonDosBinary()
         return data
-
 
     def bin2bas(self, data):
         """
@@ -158,12 +164,7 @@ class BaseAPI(object):
         if binary_file.file_type != 0x01:
             log.error("ERROR: file type $%02X is not $01 (tokenised BASIC)!", binary_file.file_type)
 
-        try: # FIXME
-            dump = [ord(byte) for byte in binary_file.data]
-        except TypeError:
-            dump = binary_file.data
-
-        ascii_lines = self.program_dump2ascii_lines(dump,
+        ascii_lines = self.program_dump2ascii_lines(dump=binary_file.data,
             # FIXME:
             #program_start=bin.exec_address
             program_start=binary_file.load_address

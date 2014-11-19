@@ -12,6 +12,8 @@
 
 from __future__ import absolute_import, division, print_function
 from dragonlib.utils import six
+from dragonlib.utils.byte_word_values import bin2hexline
+
 xrange = six.moves.xrange
 
 import logging
@@ -145,10 +147,18 @@ def log_program_dump(ram_content, level=99):
 
 def log_bytes(data, msg="%s", level=logging.DEBUG):
     if six.PY3: # iterate over bytes result in intergers in Py3 !
+        assert isinstance(data, bytes), "is type: %s and not bytes: %s" % (type(data), repr(data))
         data = " ".join(["%02X" % item for item in data])
     else:
+        assert isinstance(data, str), "is type: %s and not str: %s" % (type(data), repr(data))
         data = " ".join(["%02X" % ord(item) for item in data])
     log.log(level, msg, data)
+
+
+def log_hexlines(data, msg="Data:", level=logging.DEBUG, width=16):
+    log.log(level, msg)
+    for line in bin2hexline(data, width):
+        log.log(level, line)
 
 
 def test_run():

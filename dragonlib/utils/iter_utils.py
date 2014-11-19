@@ -11,6 +11,15 @@
 
 from __future__ import absolute_import, division, print_function
 
+from dragonlib.utils import six
+
+
+# Obsolete if http://legacy.python.org/dev/peps/pep-0467/ merged:
+if six.PY2:
+    iter_bytes = lambda data: (ord(b) for b in data)
+else:
+    iter_bytes = iter
+
 
 def list_replace(iterable, src, dst):
     """

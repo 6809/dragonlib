@@ -14,6 +14,8 @@ from __future__ import absolute_import, division, print_function
 
 
 import unittest
+from dragonlib.utils.byte_word_values import bin2hexline
+
 
 class BaseTestCase(unittest.TestCase):
     """
@@ -59,3 +61,11 @@ class BaseTestCase(unittest.TestCase):
             msg = "%s != %s" % (first, second)
         self.assertEqual(first, second, msg)
 
+    def assertBinEqual(self, bin1, bin2, msg=None, width=16):
+        first = bin2hexline(bin1, width=width)
+        second = bin2hexline(bin2, width=width)
+        self.assertSequenceEqual(first, second, msg)
+
+        # first = "\n".join(bin2hexline(bin1, width=width))
+        # second = "\n".join(bin2hexline(bin2, width=width))
+        # self.assertMultiLineEqual(first, second, msg)

@@ -236,7 +236,7 @@ class BasicLine(object):
                 next_token=None
 
             if token in to_split:
-                print("X%sX" % to_split[token])
+                log.debug("X%sX" % to_split[token])
 
                 try:
                     if temp[-1]!=space:
@@ -252,7 +252,7 @@ class BasicLine(object):
                 if was_token and token==space:
                     was_token=False
                     continue
-                print("Y%rY" % self.token_util.tokens2ascii([token]))
+                log.debug("Y%rY" % self.token_util.tokens2ascii([token]))
                 temp.append(token)
 
         temp = list_replace(temp, self.token_util.ascii2token("GO TO"), self.token_util.ascii2token("GOTO"))
@@ -335,7 +335,10 @@ class BasicListing(object):
                 line_tokens += [0x00, 0x00]
             program_dump += line_tokens
 
-        return program_dump
+        if six.PY3:
+            return bytes(program_dump)
+        else:
+            return "".join(program_dump)
 
     def ascii_listing2basic_lines(self, txt):
         basic_lines = []
@@ -357,6 +360,8 @@ class BasicListing(object):
             formated_dump.append(
                 "program start address: $%04x" % program_start
             )
+
+        assert isinstance(program_dump, six.binary_type)
 
         try:
             next_address = (program_dump[0] << 8) + program_dump[1]

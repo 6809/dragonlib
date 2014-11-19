@@ -12,6 +12,7 @@
 """
 
 from __future__ import absolute_import, division, print_function
+from dragonlib.utils import six
 
 
 def signed5(x):
@@ -20,17 +21,20 @@ def signed5(x):
         x = x - 0x20 # 0x20 == 2**5 == 32
     return x
 
+
 def signed8(x):
     """ convert to signed 8-bit """
     if x > 0x7f: # 0x7f ==  2**7-1 == 127
         x = x - 0x100 # 0x100 == 2**8 == 256
     return x
 
+
 def unsigned8(x):
     """ convert a signed 8-Bit value into a unsigned value """
     if x < 0:
         x = x + 0x0100 # 0x100 == 2**8 == 256
     return x
+
 
 def signed16(x):
     """ convert to signed 16-bit """
@@ -68,6 +72,65 @@ def bytes2word(byte_list):
     return (byte_list[0] << 8) + byte_list[1]
 
 
+def bin2hexline(data, add_addr=True, width=16):
+    """
+    Format binary data to a Hex-Editor like format...
+
+    e.g.:
+    with open("C:\Python27\python.exe", "rb") as f:
+        data = f.read(150)
+
+    print("\n".join(bin2hexline(data, width=16)))
+
+    0000 4d 5a 90 00 03 00 00 00 04 00 00 00 ff ff 00 00 MZ..............
+    0016 b8 00 00 00 00 00 00 00 40 00 00 00 00 00 00 00 ........@.......
+    0032 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
+    0048 00 00 00 00 00 00 00 00 00 00 00 00 e8 00 00 00 ................
+    0064 0e 1f ba 0e 00 b4 09 cd 21 b8 01 4c cd 21 54 68 ........!..L.!Th
+    0080 69 73 20 70 72 6f 67 72 61 6d 20 63 61 6e 6e 6f is.program.canno
+    0096 74 20 62 65 20 72 75 6e 20 69 6e 20 44 4f 53 20 t.be.run.in.DOS.
+    0112 6d 6f 64 65 2e 0d 0d 0a 24 00 00 00 00 00 00 00 mode....$.......
+    0128 9d 68 ba 89 d9 09 d4 da d9 09 d4 da d9 09 d4 da .h..............
+    0144 d0 71 41 da d8 09                               .qA...
+    """
+    assert isinstance(data, six.binary_type)
+
+    addr = 0
+    lines = []
+    run = True
+    line_width = 4 + (width * 3) + 1
+    while run:
+        if add_addr:
+            line = ["%04i" % addr]
+        else:
+            line = []
+
+        ascii_block = ""
+        for i in range(width):
+            b = data[addr]
+            if six.PY2:
+                b = ord(b)
+
+            if 33 <= b <= 126:
+                ascii_block += chr(b)
+            else:
+                ascii_block += "."
+
+            line.append("%02x" % b)
+
+            addr += 1
+            if addr >= len(data):
+                run = False
+                break
+
+        line = " ".join(line)
+        line = line.ljust(line_width)
+        line += ascii_block
+        lines.append(line)
+    return lines
+
+
 if __name__ == "__main__":
     import doctest
+
     print(doctest.testmod(verbose=0))
