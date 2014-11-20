@@ -96,7 +96,9 @@ def bin2hexline(data, add_addr=True, width=16):
     0128 9d 68 ba 89 d9 09 d4 da d9 09 d4 da d9 09 d4 da .h..............
     0144 d0 71 41 da d8 09                               .qA...
     """
-    assert isinstance(data, six.binary_type)
+    assert isinstance(data, six.binary_type), (
+        "is type: %s and not bytes/str: %s" % (type(data), repr(data))
+    )
 
     addr = 0
     lines = []
