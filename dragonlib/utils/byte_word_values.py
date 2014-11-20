@@ -7,11 +7,14 @@
     some code is borrowed from:
     XRoar emulator by Ciaran Anscomb (GPL license) more info, see README
 
-    :copyleft: 2013-2014 by the DragonPy team, see AUTHORS for more details.
+    :copyleft: 2013-2014 by the DragonLib team, see AUTHORS for more details.
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 
 from __future__ import absolute_import, division, print_function
+
+import string
+
 from dragonlib.utils import six
 
 
@@ -111,7 +114,7 @@ def bin2hexline(data, add_addr=True, width=16):
             if six.PY2:
                 b = ord(b)
 
-            if 33 <= b <= 126:
+            if chr(b) in string.printable:
                 ascii_block += chr(b)
             else:
                 ascii_block += "."
@@ -130,7 +133,18 @@ def bin2hexline(data, add_addr=True, width=16):
     return lines
 
 
+def _bin2hexline_example():
+    import sys
+
+    with open(sys.executable, "rb") as f:
+        data = f.read(500)
+
+    print("\n".join(bin2hexline(data, width=16)))
+
+
 if __name__ == "__main__":
     import doctest
 
     print(doctest.testmod(verbose=0))
+
+    # _bin2hexline_example()
