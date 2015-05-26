@@ -14,6 +14,11 @@ Used in:
 {{{DwLoadServer}}} - DWLOAD server implemented in Python
 * https://github.com/DWLOAD/DwLoadServer
 
+
+| {{https://travis-ci.org/6809/dragonlib.svg|Build Status on travis-ci.org}} | [[https://travis-ci.org/6809/dragonlib/|travis-ci.org/6809/dragonlib]] |
+| {{https://coveralls.io/repos/6809/dragonlib/badge.svg|Coverage Status on coveralls.io}} | [[https://coveralls.io/r/6809/dragonlib|coveralls.io/r/6809/dragonlib]] |
+
+
 == History
 
 * 15.12.2014 - v0.1.3 - Add a Pygments Lexer
