@@ -45,6 +45,9 @@ class BaseAPI(object):
         convert a memory dump of a tokensized BASIC listing into
         ASCII listing list.
         """
+        dump = bytearray(dump)
+        # assert isinstance(dump, bytearray)
+
         if program_start is None:
             program_start = self.DEFAULT_PROGRAM_START
         return self.listing.program_dump2ascii_lines(dump, program_start)
@@ -82,8 +85,8 @@ class BaseAPI(object):
         basic_lines = self.ascii_listing2basic_lines(basic_program_ascii, program_start)
 
         program_dump=self.listing.basic_lines2program_dump(basic_lines, program_start)
-        assert isinstance(program_dump, six.binary_type), (
-            "is type: %s and not bytes/str: %s" % (type(program_dump), repr(program_dump))
+        assert isinstance(program_dump, bytearray), (
+            "is type: %s and not bytearray: %s" % (type(program_dump), repr(program_dump))
         )
         return program_dump
 
@@ -99,6 +102,8 @@ class BaseAPI(object):
         format a BASIC program dump. Useful for debugging.
         returns a list of formated string lines.
         """
+        assert isinstance(program_dump, bytearray)
+
         if program_start is None:
             program_start = self.DEFAULT_PROGRAM_START
         return self.listing.pformat_program_dump(program_dump, program_start)
@@ -158,6 +163,8 @@ class BaseAPI(object):
         see:
         http://archive.worldofdragon.org/phpBB3/viewtopic.php?f=8&t=348&p=10139#p10139
         """
+        data = bytearray(data)
+
         binary_file = BinaryFile()
         binary_file.load_from_bin(data)
 

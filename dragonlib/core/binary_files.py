@@ -72,6 +72,9 @@ class BinaryFile(object):
         self.debug2log(level=logging.DEBUG)
         header = self.get_header()
 
+        if six.PY2:
+            return header + "".join([chr(i) for i in self.data])
+
         return header + self.data
 
     def load_DragonDosBinary(self, data, strip_padding=True):
@@ -89,6 +92,8 @@ class BinaryFile(object):
           8       byte    $AA           Constant
           9-xxx   byte[]  Data
         """
+        data = bytearray(data)
+
         log.debug("Load Dragon DOS Binary Format.")
 
         meta_data = struct.unpack(">BBHHHB", data[:9])
@@ -134,7 +139,10 @@ class BinaryFile(object):
         see:
         http://archive.worldofdragon.org/phpBB3/viewtopic.php?f=8&t=348&p=10139#p10139
         """
+        data = bytearray(data)
+
         machine_type = data[0]
+
         # machine_type = struct.unpack("B", bin[0])[0]
         if machine_type == 0x55:
             # Dragon DOS Binary Format
@@ -145,11 +153,9 @@ class BinaryFile(object):
             raise NotImplementedError("ERROR: Format $%02X unknown." % machine_type)
 
     def load_tokenised_dump(self, tokenised_dump, load_address, exec_address):
-        assert isinstance(tokenised_dump, six.binary_type), (
-            "is type: %s and not bytes/str: %s" % (type(tokenised_dump), repr(tokenised_dump))
-        )
+        self.data = bytearray(tokenised_dump)
+
         self.file_type = 0x01
         self.load_address = load_address
-        self.length = len(tokenised_dump)
+        self.length = len(self.data)
         self.exec_address = exec_address
-        self.data = tokenised_dump

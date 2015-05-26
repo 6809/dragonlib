@@ -322,7 +322,7 @@ class BasicListing(object):
         return self.dump2basic_lines(dump[length:], next_address, basic_lines)
 
     def basic_lines2program_dump(self, basic_lines, program_start):
-        program_dump = []
+        program_dump = bytearray()
         current_address = program_start
         count = len(basic_lines)
         for no, line in enumerate(basic_lines, 1):
@@ -330,15 +330,15 @@ class BasicListing(object):
             line_tokens = line.get_tokens() + [0x00]
 
             current_address += len(line_tokens) + 2
-            program_dump += word2bytes(current_address)
+            current_address_bytes = word2bytes(current_address) # e.g.: word2bytes(0xff09) -> (255, 9)
+
+            program_dump += bytearray(current_address_bytes)
+
             if no == count: # It's the last line
                 line_tokens += [0x00, 0x00]
-            program_dump += line_tokens
+            program_dump += bytearray(line_tokens)
 
-        if six.PY3:
-            return bytes(program_dump)
-        else:
-            return "".join(program_dump)
+        return program_dump
 
     def ascii_listing2basic_lines(self, txt):
         basic_lines = []
@@ -361,7 +361,10 @@ class BasicListing(object):
                 "program start address: $%04x" % program_start
             )
 
-        assert isinstance(program_dump, six.binary_type)
+        assert isinstance(program_dump, bytearray)
+
+        if not program_dump:
+            return program_dump
 
         try:
             next_address = (program_dump[0] << 8) + program_dump[1]

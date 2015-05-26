@@ -6,7 +6,7 @@
     ~~~~~~~~~~~~~~~~~~~~
 
     :created: 2014 by Jens Diemer - www.jensdiemer.de
-    :copyleft: 2014 by the DragonPy team, see AUTHORS for more details.
+    :copyleft: 2014-2015 by the DragonPy team, see AUTHORS for more details.
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 
@@ -14,6 +14,7 @@ from __future__ import absolute_import, division, print_function
 import os
 
 import sys
+import textwrap
 import unittest
 import logging
 
@@ -43,25 +44,28 @@ class BaseDragon32ApiTestCase(BaseTestCase):
         self.dragon32api = Dragon32API()
 
     def assertEqualProgramDump(self, first, second, program_start, msg=None):
-        first = six.binary_type(first)
-        second = six.binary_type(second)
+        first = bytearray(first)
+        second = bytearray(second)
         first = self.dragon32api.pformat_program_dump(first, program_start)
         second = self.dragon32api.pformat_program_dump(second, program_start)
         self.assertEqual(first, second, msg)
 
     def assertListing2Dump(self, ascii_listing, program_dump, program_start, debug=False):
+        program_dump = bytearray(program_dump)
+
         if debug:
             print("\n" + "_" * 79)
             print(" *** Debug Listing:\n%s" % ascii_listing)
             print(" -" * 39)
             print(" *** Debug Dump:\n%s\n" % (
-                pformat_program_dump(program_dump)
+                "\n".join(bin2hexline(program_dump))
             ))
             print(" -" * 39)
 
         created_program_dump = self.dragon32api.ascii_listing2program_dump(
             ascii_listing, program_start
         )
+        self.assertTrue(isinstance(created_program_dump, bytearray))
         if debug:
             print(" *** Created dump from listing:\n%s\n" % (
                 pformat_program_dump(created_program_dump)
@@ -80,6 +84,8 @@ class BaseDragon32ApiTestCase(BaseTestCase):
         self.assertEqualProgramDump(created_program_dump, program_dump, program_start)
 
     def assertDump2Listing(self, ascii_listing, program_dump):
+        program_dump = bytearray(program_dump)
+
         # log_program_dump(created_program_dump)
         #         print "\n".join(
         #             self.dragon32api.pformat_program_dump(created_program_dump)
@@ -93,6 +99,9 @@ class BaseDragon32ApiTestCase(BaseTestCase):
         prepare the multiline, indentation text.
         from python-creole
         """
+        return textwrap.dedent(txt).strip("\n")
+
+        '''
         # txt = unicode(txt)
         txt = txt.splitlines()
         assert txt[0] == "", "First assertion line must be empty! Is: %s" % repr(txt[0])
@@ -122,6 +131,7 @@ class BaseDragon32ApiTestCase(BaseTestCase):
         # ~ print("-"*79)
 
         return str(txt)  # turn to unicode, for better assertEqual error messages
+        '''
 
 
 class Dragon32BASIC_LowLevel_ApiTest(BaseDragon32ApiTestCase):
@@ -307,9 +317,8 @@ class Dragon32BASIC_HighLevel_ApiTest(BaseDragon32ApiTestCase):
             0x00, # end of line
             0x00, 0x00,  # program end
         )
-        program_dump = six.binary_type(program_dump)
         self.assertListing2Dump(ascii_listing, program_dump, program_start=0x1e01,
-            # debug=True
+            debug=True
         )
         self.assertDump2Listing(ascii_listing, program_dump)
 

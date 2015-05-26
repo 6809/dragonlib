@@ -146,12 +146,8 @@ def log_program_dump(ram_content, level=99):
 
 
 def log_bytes(data, msg="%s", level=logging.DEBUG):
-    if six.PY3: # iterate over bytes result in intergers in Py3 !
-        assert isinstance(data, bytes), "is type: %s and not bytes: %s" % (type(data), repr(data))
-        data = " ".join(["%02X" % item for item in data])
-    else:
-        assert isinstance(data, str), "is type: %s and not str: %s" % (type(data), repr(data))
-        data = " ".join(["%02X" % ord(item) for item in data])
+    data = bytearray(data)
+    data = " ".join(["%02X" % item for item in data])
     log.log(level, msg, data)
 
 
