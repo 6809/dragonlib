@@ -24,10 +24,17 @@ from dragonlib.utils import six
 from dragonlib.utils.byte_word_values import bin2hexline
 from dragonlib.utils.unittest_utils import TextTestRunner2
 from dragonlib.utils.logging_utils import pformat_program_dump
-from dwload_server.utils.file_tools import padding
 
 
 log = logging.getLogger(__name__)
+
+
+def padding(data, size, b=b"\x00"):
+    quanta, leftover = divmod(len(data), size)
+    # Pad the last quantum with zero bits if necessary
+    if leftover:
+        data += (b * (size - leftover))
+    return data
 
 
 class BaseDragon32ApiTestCase(BaseTestCase):
@@ -588,6 +595,7 @@ class Dragon32bin(BaseDragon32ApiTestCase):
         )
         self.assertBinEqual(bin, testdata.LISTING_02_DOS_DUMP)
 
+    @unittest.skip("TODO: test_autoload!")
     def test_autoload(self):
         import os
 
