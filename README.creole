@@ -6,6 +6,10 @@ Python Modules/Tools Open source (GPL v3 or later) for 6809 based homecomputer l
 * {{{Tandy TRS-80 Color Computer}}} (CoCo) : http://en.wikipedia.org/wiki/TRS-80_Color_Computer
 
 
+**Note:** Currently Python 3 is needed for fully work.
+ TODO: Add Support for Python 2 and PyPy, see: https://github.com/6809/dragonlib/issues/1
+
+
 Used in:
 
 {{{DragonPy}}} - Emulator for 6809 CPU based system like Dragon 32 / CoCo written in Python:
