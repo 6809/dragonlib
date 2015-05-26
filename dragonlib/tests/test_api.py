@@ -11,6 +11,7 @@
 """
 
 from __future__ import absolute_import, division, print_function
+import os
 
 import sys
 import unittest
@@ -595,17 +596,32 @@ class Dragon32bin(BaseDragon32ApiTestCase):
         )
         self.assertBinEqual(bin, testdata.LISTING_02_DOS_DUMP)
 
-    @unittest.skip("TODO: test_autoload!")
-    def test_autoload(self):
-        import os
+    def test_bin2bas(self):
+        example_listing = """\
+10 CLS
+20 PRINT" *** DYNAMIC MENU ***  14:11:18"
+30 PRINT"/HOME/FOO/DWLOAD-FILES"
+40 PRINT" 0 - HEXVIEW.BAS"
+50 PRINT" 1 - TEST.BAS"
+60 PRINT" 2 - SAVE"
+70 PRINT"PLEASE SELECT (X FOR RELOAD) !"
+80 A$=INKEY$:IF A$="" GOTO 80
+90 IF A$="X" THEN DLOAD
+100 IF A$="0" THEN DLOAD"HEXVIEW.BAS"
+110 IF A$="1" THEN DLOAD"TEST.BAS"
+120 IF A$="2" THEN DLOAD"SAVE"
+130 GOTO 10"""
 
-        filepath = os.path.expanduser("~/dwload-files/AUTOLOAD.DWL")
+        filepath = os.path.join(os.path.dirname(__file__), "AUTOLOAD.DWL")
+        self.assertTrue(os.path.isfile(filepath), "file %r not exists?!?" % filepath)
         with open(filepath, "rb") as f:
             data = f.read()
 
-        print("\n".join(bin2hexline(data, width=16)))
+        # print("\n".join(bin2hexline(data, width=16)))
 
         bas1 = self.dragon32api.bin2bas(data)
+
+        self.assertEqual(bas1, example_listing)
 
         bin = self.dragon32api.bas2bin(
             bas1,
@@ -615,11 +631,6 @@ class Dragon32bin(BaseDragon32ApiTestCase):
 
         self.maxDiff = None
         self.assertBinEqual(bin, data)
-
-        # self.binary.load_from_bin(data)
-        # self.binary.debug2log()
-        #
-        # print("OK")
 
 
 if __name__ == '__main__':
@@ -638,10 +649,6 @@ if __name__ == '__main__':
         testRunner=TextTestRunner2,
         argv=(
             sys.argv[0],
-                # "Dragon32BASIC_HighLevel_ApiTest.test_listing2program_strings_dont_in_comment",
-                #             "Dragon32BASIC_HighLevel_ApiTest.test_two_byte_line_numbers",
-                #             "RenumTests.test_on_gosub_and_goto"
-            "Dragon32bin.test_autoload"
         ),
         # verbosity=1,
         verbosity=2,
