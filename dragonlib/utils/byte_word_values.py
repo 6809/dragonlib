@@ -100,6 +100,9 @@ def bin2hexline(data, add_addr=True, width=16):
         "is type: %s and not bytes/str: %s" % (type(data), repr(data))
     )
 
+    # same as string.printable but without \t\n\r\v\f ;)
+    printable = string.digits + string.ascii_letters + string.punctuation + " "
+
     addr = 0
     lines = []
     run = True
@@ -116,7 +119,7 @@ def bin2hexline(data, add_addr=True, width=16):
             if six.PY2:
                 b = ord(b)
 
-            if chr(b) in string.printable:
+            if chr(b) in printable:
                 ascii_block += chr(b)
             else:
                 ascii_block += "."
