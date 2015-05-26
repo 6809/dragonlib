@@ -21,8 +21,9 @@ Used in:
 
 == History
 
-* 15.12.2014 - v0.1.3 - Add a Pygments Lexer
-* 19.11.2014 - v0.1.2 - Bugfix {{{api.bin2bas()}}} and {{{api.bas2bin()}}}
+* 26.05.2015 - v0.1.4 - [[https://github.com/6809/dragonlib/compare/v0.1.3...v0.1.4|Update test code, use travis-ci.org and coveralls.io]]
+* 15.12.2014 - v0.1.3 - [[https://github.com/6809/dragonlib/compare/v0.1.2...v0.1.3|Add a Pygments Lexer]]
+* 19.11.2014 - v0.1.2 - [[https://github.com/6809/dragonlib/compare/v0.1.1...v0.1.2|Bugfix {{{api.bin2bas()}}} and {{{api.bas2bin()}}}]]
 * 15.11.2014 - v0.1.1 - Add {{{api.bin2bas()}}} and {{{api.bas2bin()}}} for Dragon DOS Binary <-> ASCII listing
 * TODO: Add old history ;)
 
