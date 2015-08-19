@@ -66,7 +66,7 @@ def setup_logging(level, logger_name=None, handler=None, log_formatter=None):
         root_logger.info("Set %i level to logger %r", level, logger_name)
 
     if level == 100:
-        logger.handlers = ()
+        logger.handlers = (logging.NullHandler(),)
         logger.disabled = True
         return
 
