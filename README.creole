@@ -20,8 +20,21 @@ Tested with Python 3.4, 2.7 and PyPy 2
 | {{https://coveralls.io/repos/6809/dragonlib/badge.svg|Coverage Status on coveralls.io}} | [[https://coveralls.io/r/6809/dragonlib|coveralls.io/r/6809/dragonlib]] |
 
 
+=== run unittests
+
+{{{
+/home/FooBar$ cd DragonPy_env
+/home/FooBar/DragonPy_env$ source bin/activate
+(DragonPy_env)~/DragonPy_env$ cd src/dragonlib
+(DragonPy_env)~/DragonPy_env/src/dragonlib$ ./setup.py nosetests
+}}}
+
+
 == History
 
+* [[https://github.com/6809/dragonlib/compare/v0.1.5...v0.1.6|19.08.2015 - v0.1.6]]:
+** Bugfixes: Disable logging
+** use nose to run unittests
 * 26.05.2015 - v0.1.5 - [[https://github.com/6809/dragonlib/compare/v0.1.4...v0.1.5|Bugfixes to support Py2, too.]]
 * 26.05.2015 - v0.1.4 - [[https://github.com/6809/dragonlib/compare/v0.1.3...v0.1.4|Update test code, use travis-ci.org and coveralls.io]]
 * 15.12.2014 - v0.1.3 - [[https://github.com/6809/dragonlib/compare/v0.1.2...v0.1.3|Add a Pygments Lexer]]
