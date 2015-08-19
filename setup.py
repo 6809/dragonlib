@@ -234,5 +234,6 @@ setup(
     test_suite="dragonlib.tests.get_tests",
     tests_require=[
         "nose", # https://pypi.python.org/pypi/nose
+        "pygments",
     ],
 )
