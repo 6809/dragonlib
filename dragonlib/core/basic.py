@@ -16,7 +16,7 @@ import logging
 import re
 
 from dragonlib.core import basic_parser
-from dragonlib.utils import six
+import six
 from dragonlib.utils.iter_utils import list_replace
 from dragonlib.utils.logging_utils import pformat_byte_hex_list, \
     log_program_dump

@@ -6,7 +6,7 @@
     ==========================
 
     :created: 2014 by Jens Diemer - www.jensdiemer.de
-    :copyleft: 2014 by the DragonLib team, see AUTHORS for more details.
+    :copyleft: 2014-2015 by the DragonLib team, see AUTHORS for more details.
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 
@@ -20,7 +20,6 @@ from dragonlib.core.binary_files import BinaryFile
 from dragonlib.tests import testdata
 from dragonlib.tests.test_base import BaseTestCase
 from dragonlib.utils.byte_word_values import bin2hexline
-from dragonlib.utils.unittest_utils import TextTestRunner2
 from dragonlib.utils.logging_utils import log_bytes
 
 log = logging.getLogger(__name__)
@@ -61,28 +60,3 @@ class TestBinaryFile(BaseTestCase):
 
         self.assertBinEqual(dragon_bin, testdata.LISTING_02_DOS_DUMP)
 
-
-
-if __name__ == "__main__":
-    from dragonlib.utils.logging_utils import setup_logging
-
-    setup_logging(
-        # level=1 # hardcore debug ;)
-        level=10  # DEBUG
-        # level=20  # INFO
-        # level=30  # WARNING
-        # level=40 # ERROR
-        # level=50 # CRITICAL/FATAL
-    )
-
-    unittest.main(
-        argv=(
-            sys.argv[0],
-            #"TestBinaryFile.test_autoload",
-        ),
-        testRunner=TextTestRunner2,
-        # verbosity=1,
-        verbosity=2,
-        # failfast=True,
-    )
-    print(" --- END --- ")

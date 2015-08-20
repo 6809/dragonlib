@@ -11,7 +11,7 @@
 """
 
 from __future__ import absolute_import, division, print_function
-from dragonlib.utils import six
+import six
 from dragonlib.utils.byte_word_values import bin2hexline
 
 xrange = six.moves.xrange

@@ -15,7 +15,7 @@ from __future__ import absolute_import, division, print_function
 
 import string
 
-from dragonlib.utils import six
+import six
 
 
 def signed5(x):

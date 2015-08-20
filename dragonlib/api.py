@@ -12,6 +12,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+import six
 import logging
 
 from dragonlib.CoCo.basic_tokens import COCO_BASIC_TOKENS
@@ -20,7 +21,6 @@ from dragonlib.core.basic import BasicListing, RenumTool, BasicTokenUtil,\
 from dragonlib.core.basic_parser import BASICParser
 from dragonlib.core.binary_files import BinaryFile
 from dragonlib.dragon32.basic_tokens import DRAGON32_BASIC_TOKENS
-from dragonlib.utils import six
 from dragonlib.utils.logging_utils import log_bytes
 
 log=logging.getLogger(__name__)
