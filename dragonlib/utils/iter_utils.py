@@ -11,7 +11,7 @@
 
 from __future__ import absolute_import, division, print_function
 
-from dragonlib.utils import six
+import six
 
 
 # Obsolete if http://legacy.python.org/dev/peps/pep-0467/ merged:

@@ -11,7 +11,7 @@
 """
 
 from __future__ import absolute_import, division, print_function
-
+import textwrap
 
 import unittest
 from dragonlib.utils.byte_word_values import bin2hexline
@@ -69,3 +69,29 @@ class BaseTestCase(unittest.TestCase):
         first = "\n".join(bin2hexline(bin1, width=width))
         second = "\n".join(bin2hexline(bin2, width=width))
         self.assertMultiLineEqual(first, second, msg)
+
+    def _dedent(self, txt):
+        # Remove any common leading whitespace from every line
+        txt = textwrap.dedent(txt)
+
+        # strip whitespace at the end of every line
+        txt = "\n".join([line.rstrip() for line in txt.splitlines()])
+        txt = txt.strip()
+        return txt
+
+    def assertEqual_dedent(self, first, second, msg=None):
+        first = self._dedent(first)
+        second = self._dedent(second)
+        try:
+            self.assertEqual(first, second, msg)
+        except AssertionError as err:
+            # Py2 has a bad error message
+            msg = (
+                "%s\n"
+                " ------------- [first] -------------\n"
+                "%s\n"
+                " ------------- [second] ------------\n"
+                "%s\n"
+                " -----------------------------------\n"
+            ) % (err, first, second)
+            raise AssertionError(msg)

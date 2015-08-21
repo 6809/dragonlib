@@ -32,6 +32,10 @@ Tested with Python 3.4, 2.7 and PyPy 2
 
 == History
 
+* [[https://github.com/6809/dragonlib/compare/v0.1.6...v0.1.7|21.08.2015 - v0.1.7]]:
+** Bugfixes: Disable logging, again ;)
+** remove own six and add it to setup.py "install_requires"
+** cleanup code
 * [[https://github.com/6809/dragonlib/compare/v0.1.5...v0.1.6|19.08.2015 - v0.1.6]]:
 ** Bugfixes: Disable logging
 ** use nose to run unittests

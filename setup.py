@@ -201,6 +201,13 @@ setup(
     version=__version__,
     py_modules=["dragonlib"],
     provides=["dragonlib"],
+    install_requires=[
+        "six",
+    ],
+    tests_require=[
+        "nose", # https://pypi.python.org/pypi/nose
+        "pygments",
+    ],
     author="Jens Diemer",
     author_email="dragonlib@jensdiemer.de",
     description="Library around 6809 computers like Dragon 32/64, CoCo...",
@@ -231,9 +238,4 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     zip_safe=False,
-    test_suite="dragonlib.tests.get_tests",
-    tests_require=[
-        "nose", # https://pypi.python.org/pypi/nose
-        "pygments",
-    ],
 )

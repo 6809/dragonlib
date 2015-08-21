@@ -15,7 +15,7 @@ from __future__ import absolute_import, division, print_function
 import logging
 import struct
 
-from dragonlib.utils import six
+import six
 from dragonlib.utils.byte_word_values import bin2hexline
 from dragonlib.utils.logging_utils import log_bytes
 

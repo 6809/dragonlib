@@ -11,20 +11,17 @@
 """
 
 from __future__ import absolute_import, division, print_function
-import os
 
-import sys
+import os
 import textwrap
-import unittest
 import logging
 
 from dragonlib.api import Dragon32API
 from dragonlib.core.basic import BasicLine
 from dragonlib.tests import testdata
 from dragonlib.tests.test_base import BaseTestCase
-from dragonlib.utils import six
+
 from dragonlib.utils.byte_word_values import bin2hexline
-from dragonlib.utils.unittest_utils import TextTestRunner2
 from dragonlib.utils.logging_utils import pformat_program_dump
 
 
@@ -642,24 +639,3 @@ class Dragon32bin(BaseDragon32ApiTestCase):
         self.assertBinEqual(bin, data)
 
 
-if __name__ == '__main__':
-    from dragonlib.utils.logging_utils import setup_logging
-
-    setup_logging(
-        level=1 # hardcore debug ;)
-        # level=10 # DEBUG
-        # level=20 # INFO
-        # level=30 # WARNING
-        # level=40 # ERROR
-        # level=50  # CRITICAL/FATAL
-    )
-
-    unittest.main(
-        testRunner=TextTestRunner2,
-        argv=(
-            sys.argv[0],
-        ),
-        # verbosity=1,
-        verbosity=2,
-        # failfast=True,
-    )
