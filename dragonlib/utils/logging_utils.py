@@ -43,6 +43,14 @@ def get_log_levels(additional_levels=[100,99]):
 LOG_LEVELS = get_log_levels()
 
 
+def set_handler(logger, handler):
+    """
+    Remove all existing log handler and set
+    only the given handler.
+    """
+    logger.handlers = []
+    logger.addHandler(handler)
+
 
 def setup_logging(level, logger_name=None, handler=None, log_formatter=None):
     """
@@ -66,7 +74,8 @@ def setup_logging(level, logger_name=None, handler=None, log_formatter=None):
         root_logger.info("Set %i level to logger %r", level, logger_name)
 
     if level == 100:
-        logger.handlers = (logging.NullHandler(),)
+        # Remove all existing handlers and set only NullHandler():
+        set_handler(logger, logging.NullHandler())
         logger.disabled = True
         return
 
@@ -84,7 +93,9 @@ def setup_logging(level, logger_name=None, handler=None, log_formatter=None):
         root_logger.debug("Log to file: %s (%s)", handler.baseFilename, repr(handler))
     else:
         root_logger.debug("Log to handler: %s", repr(handler))
-    logger.handlers = (handler,)
+
+    # Remove all existing handlers and set only the given handler:
+    set_handler(logger, handler)
 
     log.log(level, "Set logging to level %i %s", level, logging.getLevelName(level))
 
