@@ -3,7 +3,6 @@
     through `python -m dragonlib`.
 """
 
-
 from dragonlib.cli_app import main
 
 

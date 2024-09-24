@@ -10,7 +10,6 @@
 """
 
 
-
 import logging
 import sys
 import unittest
@@ -52,7 +51,8 @@ class TestBASICParser(unittest.TestCase):
             10 CLS
             20 PRINT
         """
-        self.assertParser(ascii_listing,
+        self.assertParser(
+            ascii_listing,
             {
                 10: [
                     """<CODE:CLS>""",
@@ -66,7 +66,8 @@ class TestBASICParser(unittest.TestCase):
 
     def test_string(self):
         ascii_listing = '10 A$="A STRING"'
-        self.assertParser(ascii_listing,
+        self.assertParser(
+            ascii_listing,
             {
                 10: [
                     """<CODE:A$=>""",
@@ -80,7 +81,8 @@ class TestBASICParser(unittest.TestCase):
         ascii_listing = """
             10 A$="1":B=2:C$="4":CLS:PRINT "ONLY CODE"
         """
-        self.assertParser(ascii_listing,
+        self.assertParser(
+            ascii_listing,
             {
                 10: [
                     """<CODE:A$=>""",
@@ -98,7 +100,8 @@ class TestBASICParser(unittest.TestCase):
         ascii_listing = """
             10 A$="NO :'REM" ' BUT HERE!
         """
-        self.assertParser(ascii_listing,
+        self.assertParser(
+            ascii_listing,
             {
                 10: [
                     """<CODE:A$=>""",
@@ -114,7 +117,8 @@ class TestBASICParser(unittest.TestCase):
         ascii_listing = """
             10 PRINT "NOT TERMINATED STRING
         """
-        self.assertParser(ascii_listing,
+        self.assertParser(
+            ascii_listing,
             {
                 10: [
                     """<CODE:PRINT >""",
@@ -128,7 +132,8 @@ class TestBASICParser(unittest.TestCase):
         ascii_listing = """
             10 DATA 1,2,A,FOO
         """
-        self.assertParser(ascii_listing,
+        self.assertParser(
+            ascii_listing,
             {
                 10: [
                     """<CODE:DATA>""",
@@ -142,7 +147,8 @@ class TestBASICParser(unittest.TestCase):
         ascii_listing = """
             10 DATA 1,2,"A","FOO BAR",4,5
         """
-        self.assertParser(ascii_listing,
+        self.assertParser(
+            ascii_listing,
             {
                 10: [
                     """<CODE:DATA>""",
@@ -156,7 +162,8 @@ class TestBASICParser(unittest.TestCase):
         ascii_listing = """
             10 DATA "FOO : BAR"
         """
-        self.assertParser(ascii_listing,
+        self.assertParser(
+            ascii_listing,
             {
                 10: [
                     """<CODE:DATA>""",
@@ -170,7 +177,8 @@ class TestBASICParser(unittest.TestCase):
         ascii_listing = """
             10 DATA "FOO : BAR":PRINT 123
         """
-        self.assertParser(ascii_listing,
+        self.assertParser(
+            ascii_listing,
             {
                 10: [
                     """<CODE:DATA>""",
@@ -185,7 +193,8 @@ class TestBASICParser(unittest.TestCase):
         ascii_listing = """
             10 REM A COMMENT
         """
-        self.assertParser(ascii_listing,
+        self.assertParser(
+            ascii_listing,
             {
                 10: [
                     """<CODE:REM>""",
@@ -199,7 +208,8 @@ class TestBASICParser(unittest.TestCase):
         ascii_listing = """
             10 REM
         """
-        self.assertParser(ascii_listing,
+        self.assertParser(
+            ascii_listing,
             {
                 10: [
                     """<CODE:REM>""",
@@ -212,7 +222,8 @@ class TestBASICParser(unittest.TestCase):
         ascii_listing = """
             10 '
         """
-        self.assertParser(ascii_listing,
+        self.assertParser(
+            ascii_listing,
             {
                 10: [
                     """<CODE:'>""",
@@ -225,7 +236,8 @@ class TestBASICParser(unittest.TestCase):
         ascii_listing = """
             10 REM FOR "FOO : BAR":PRINT 123
         """
-        self.assertParser(ascii_listing,
+        self.assertParser(
+            ascii_listing,
             {
                 10: [
                     """<CODE:REM>""",
@@ -239,7 +251,8 @@ class TestBASICParser(unittest.TestCase):
         ascii_listing = """
             10 A=2 ' FOR "FOO : BAR":PRINT 123
         """
-        self.assertParser(ascii_listing,
+        self.assertParser(
+            ascii_listing,
             {
                 10: [
                     """<CODE:A=2 '>""",
@@ -253,7 +266,8 @@ class TestBASICParser(unittest.TestCase):
         ascii_listing = """
             10 B$="'"
         """
-        self.assertParser(ascii_listing,
+        self.assertParser(
+            ascii_listing,
             {
                 10: [
                     """<CODE:B$=>""",
@@ -269,7 +283,8 @@ class TestBASICParser(unittest.TestCase):
             20     PRINT I
             30 NEXT
         """
-        self.assertParser(ascii_listing,
+        self.assertParser(
+            ascii_listing,
             {
                 10: [
                     """<CODE:FOR I=1 TO 3:>""",
@@ -281,7 +296,7 @@ class TestBASICParser(unittest.TestCase):
                     """<CODE:NEXT>""",
                 ],
             },
-#             print_parsed_lines=True
+            #             print_parsed_lines=True
         )
 
 
@@ -289,18 +304,18 @@ if __name__ == "__main__":
     from dragonlib.utils.logging_utils import setup_logging
 
     setup_logging(
-#         level=1 # hardcore debug ;)
-#         level=10  # DEBUG
-#         level=20  # INFO
-#         level=30  # WARNING
-#         level=40 # ERROR
-        level=50 # CRITICAL/FATAL
+        #         level=1 # hardcore debug ;)
+        #         level=10  # DEBUG
+        #         level=20  # INFO
+        #         level=30  # WARNING
+        #         level=40 # ERROR
+        level=50  # CRITICAL/FATAL
     )
 
     unittest.main(
         argv=(
             sys.argv[0],
-#             "TestBASICParser.test_spaces_after_line_no",
+            #             "TestBASICParser.test_spaces_after_line_no",
         ),
         #         verbosity=1,
         verbosity=2,

@@ -18,10 +18,9 @@
 """
 
 
-
+import logging
 import re
 
-import logging
 
 log = logging.getLogger(__name__)
 
@@ -60,6 +59,7 @@ class ParsedBASIC(dict):
     """
     Normal dict with special __repr__
     """
+
     def pformat(self):
         '''
         Manually pformat to force using """...""" and supress escaping apostrophe
@@ -70,9 +70,7 @@ class ParsedBASIC(dict):
         for line_no, code_objects in sorted(self.items()):
             result += '%s%i: [\n' % (indent1, line_no)
             for code_object in code_objects:
-                result += '{}"""<{}:{}>""",\n'.format(
-                    indent2, code_object.PART_TYPE, code_object.content
-                )
+                result += '{}"""<{}:{}>""",\n'.format(indent2, code_object.PART_TYPE, code_object.content)
             result += '%s],\n' % indent1
         result += "}"
 
@@ -91,26 +89,27 @@ class BASICParser:
         * Strings
         * Comments
     """
+
     def __init__(self):
         self.regex_line_no = re.compile(
             # Split the line number from the code
             r"^\s*(?P<no>\d+)\s?(?P<content>.+)\s*$",
-            re.MULTILINE
+            re.MULTILINE,
         )
         self.regex_split_all = re.compile(
             # To split a code line for parse CODE, DATA, STRING or COMMENT
             r""" ( " | DATA | REM | ') """,
-            re.VERBOSE | re.MULTILINE
+            re.VERBOSE | re.MULTILINE,
         )
         self.regex_split_data = re.compile(
             # To consume the complete DATA until " or :
             r""" ( " | : ) """,
-            re.VERBOSE | re.MULTILINE
+            re.VERBOSE | re.MULTILINE,
         )
         self.regex_split_string = re.compile(
             # To consume a string
             r""" ( " ) """,
-            re.VERBOSE | re.MULTILINE
+            re.VERBOSE | re.MULTILINE,
         )
 
     def parse(self, ascii_listing):
@@ -218,15 +217,17 @@ class BASICParser:
 
 if __name__ == "__main__":
     import unittest
+
     from dragonlib.utils.logging_utils import setup_logging
 
-    setup_logging(log,
-#        level=1 # hardcore debug ;)
-#         level=10  # DEBUG
-#         level=20  # INFO
-        level=30  # WARNING
-#         level=40 # ERROR
-#         level=50 # CRITICAL/FATAL
+    setup_logging(
+        log,
+        #        level=1 # hardcore debug ;)
+        #         level=10  # DEBUG
+        #         level=20  # INFO
+        level=30,  # WARNING
+        #         level=40 # ERROR
+        #         level=50 # CRITICAL/FATAL
     )
 
     unittest.main(

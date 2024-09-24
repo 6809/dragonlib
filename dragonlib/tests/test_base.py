@@ -19,8 +19,9 @@ class BaseTestCase(unittest.TestCase):
     """
     Only some special assertments.
     """
-    maxDiff=3000
-    
+
+    maxDiff = 3000
+
     def assertHexList(self, first, second, msg=None):
         first = ["$%x" % value for value in first]
         second = ["$%x" % value for value in second]
@@ -35,11 +36,11 @@ class BaseTestCase(unittest.TestCase):
 
     def assertIsByteRange(self, value):
         self.assertTrue(0x0 <= value, "Value (dez: %i - hex: %x) is negative!" % (value, value))
-        self.assertTrue(0xff >= value, "Value (dez: %i - hex: %x) is greater than 0xff!" % (value, value))
+        self.assertTrue(0xFF >= value, "Value (dez: %i - hex: %x) is greater than 0xff!" % (value, value))
 
     def assertIsWordRange(self, value):
         self.assertTrue(0x0 <= value, "Value (dez: %i - hex: %x) is negative!" % (value, value))
-        self.assertTrue(0xffff >= value, "Value (dez: %i - hex: %x) is greater than 0xffff!" % (value, value))
+        self.assertTrue(0xFFFF >= value, "Value (dez: %i - hex: %x) is greater than 0xffff!" % (value, value))
 
     def assertEqualHexByte(self, hex1, hex2, msg=None):
         self.assertIsByteRange(hex1)

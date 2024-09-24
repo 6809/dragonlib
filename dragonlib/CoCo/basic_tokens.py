@@ -2,11 +2,11 @@
     DragonPy - Dragon 32 emulator in Python
     =======================================
 
-    informations from:
-    
+    information from:
+
     * Color BASIC 1.3:
     http://sourceforge.net/p/toolshed/code/ci/default/tree/cocoroms/bas.asm
-    
+
     * Extended Color BASIC 1.1:
     http://sourceforge.net/p/toolshed/code/ci/default/tree/cocoroms/extbas.asm
 
@@ -14,9 +14,6 @@
     :copyleft: 2014 by the DragonPy team, see AUTHORS for more details.
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
-
-
-
 
 # Revesed word tokens from Color BASIC 1.3:
 COCO_COLOR_BASIC_TOKENS = {
@@ -30,12 +27,12 @@ COCO_COLOR_BASIC_TOKENS = {
     0x87: "PRINT",
     0x88: "ON",
     0x89: "INPUT",
-    0x8a: "END",
-    0x8b: "NEXT",
-    0x8c: "DIM",
-    0x8d: "READ",
-    0x8e: "RUN",
-    0x8f: "RESTORE",
+    0x8A: "END",
+    0x8B: "NEXT",
+    0x8C: "DIM",
+    0x8D: "READ",
+    0x8E: "RUN",
+    0x8F: "RESTORE",
     0x90: "RETURN",
     0x91: "STOP",
     0x92: "POKE",
@@ -46,102 +43,102 @@ COCO_COLOR_BASIC_TOKENS = {
     0x97: "CLOAD",
     0x98: "CSAVE",
     0x99: "OPEN",
-    0x9a: "CLOSE",
-    0x9b: "LLIST",
-    0x9c: "SET",
-    0x9d: "RESET",
-    0x9e: "CLS",
-    0x9f: "MOTOR",
-    0xa0: "SOUND",
-    0xa1: "AUDIO",
-    0xa2: "EXEC",
-    0xa3: "SKIPF",
-    0xa4: "TAB(",
-    0xa5: "TO",
-    0xa6: "SUB",
-    0xa7: "THEN",
-    0xa8: "NOT",
-    0xa9: "STEP",
-    0xaa: "OFF",
-    0xab: "+",
-    0xac: "-",
-    0xad: "*",
-    0xae: "/",
-    0xaf: "^",
-    0xb0: "AND",
-    0xb1: "OR",
-    0xb2: ">",
-    0xb3: "=",
-    0xb4: "<",
-
+    0x9A: "CLOSE",
+    0x9B: "LLIST",
+    0x9C: "SET",
+    0x9D: "RESET",
+    0x9E: "CLS",
+    0x9F: "MOTOR",
+    0xA0: "SOUND",
+    0xA1: "AUDIO",
+    0xA2: "EXEC",
+    0xA3: "SKIPF",
+    0xA4: "TAB(",
+    0xA5: "TO",
+    0xA6: "SUB",
+    0xA7: "THEN",
+    0xA8: "NOT",
+    0xA9: "STEP",
+    0xAA: "OFF",
+    0xAB: "+",
+    0xAC: "-",
+    0xAD: "*",
+    0xAE: "/",
+    0xAF: "^",
+    0xB0: "AND",
+    0xB1: "OR",
+    0xB2: ">",
+    0xB3: "=",
+    0xB4: "<",
+    #
     # Function tokens - all proceeded by 0xff to differentiate from operators
-
-    0xff80: "SGN",
-    0xff81: "INT",
-    0xff82: "ABS",
-    0xff83: "USR",
-    0xff84: "RND",
-    0xff85: "SIN",
-    0xff86: "PEEK",
-    0xff87: "LEN",
-    0xff88: "STR$",
-    0xff89: "VAL",
-    0xff8a: "ASC",
-    0xff8b: "CHR$",
-    0xff8c: "EOF",
-    0xff8d: "JOYSTK",
-    0xff8e: "LEFT$",
-    0xff8f: "RIGHT$",
-    0xff90: "MID$",
-    0xff91: "POINT",
-    0xff92: "INKEY$",
-    0xff93: "MEM",
+    #
+    0xFF80: "SGN",
+    0xFF81: "INT",
+    0xFF82: "ABS",
+    0xFF83: "USR",
+    0xFF84: "RND",
+    0xFF85: "SIN",
+    0xFF86: "PEEK",
+    0xFF87: "LEN",
+    0xFF88: "STR$",
+    0xFF89: "VAL",
+    0xFF8A: "ASC",
+    0xFF8B: "CHR$",
+    0xFF8C: "EOF",
+    0xFF8D: "JOYSTK",
+    0xFF8E: "LEFT$",
+    0xFF8F: "RIGHT$",
+    0xFF90: "MID$",
+    0xFF91: "POINT",
+    0xFF92: "INKEY$",
+    0xFF93: "MEM",
 }
-    
+
 # Revesed word tokens from Extended Color BASIC 1.1:
 COCO_EXTENDED_COLOR_BASIC_TOKENS = {
-    0xb5: "DEL",
-    0xb6: "EDIT",
-    0xb7: "TRON",
-    0xb8: "TROFF",
-    0xb9: "DEF",
-    0xba: "LET",
-    0xbb: "LINE",
-    0xbc: "PCLS",
-    0xbd: "PSET",
-    0xbe: "PRESET",
-    0xbf: "SCREEN",
-    0xc0: "PCLEAR",
-    0xc1: "COLOR",
-    0xc2: "CIRCLE",
-    0xc3: "PAINT",
-    0xc4: "GET",
-    0xc5: "PUT",
-    0xc6: "DRAW",
-    0xc7: "PCOPY",
-    0xc8: "PMODE",
-    0xc9: "PLAY",
-    0xca: "DLOAD",
-    0xcb: "RENUM",
-    0xcc: "FN",
-    0xcd: "USING",
-    
+    0xB5: "DEL",
+    0xB6: "EDIT",
+    0xB7: "TRON",
+    0xB8: "TROFF",
+    0xB9: "DEF",
+    0xBA: "LET",
+    0xBB: "LINE",
+    0xBC: "PCLS",
+    0xBD: "PSET",
+    0xBE: "PRESET",
+    0xBF: "SCREEN",
+    0xC0: "PCLEAR",
+    0xC1: "COLOR",
+    0xC2: "CIRCLE",
+    0xC3: "PAINT",
+    0xC4: "GET",
+    0xC5: "PUT",
+    0xC6: "DRAW",
+    0xC7: "PCOPY",
+    0xC8: "PMODE",
+    0xC9: "PLAY",
+    0xCA: "DLOAD",
+    0xCB: "RENUM",
+    0xCC: "FN",
+    0xCD: "USING",
+    #
     # Function tokens - all proceeded by 0xff to differentiate from operators
-    
-    0xff94: "ATN",
-    0xff95: "COS",
-    0xff96: "TAN",
-    0xff97: "EXP",
-    0xff98: "FIX",
-    0xff99: "LOG",
-    0xff9a: "POS",
-    0xff9b: "SQR",
-    0xff9c: "HEX$",
-    0xff9d: "VARPTR",
-    0xff9e: "INSTR",
-    0xff9f: "TIMER",
-    0xffa0: "PPOINT",
-    0xffa1: "STRING$",
+    #
+    0xFF94: "ATN",
+    0xFF95: "COS",
+    0xFF96: "TAN",
+    0xFF97: "EXP",
+    0xFF98: "FIX",
+    0xFF99: "LOG",
+    0xFF9A: "POS",
+    0xFF9B: "SQR",
+    0xFF9C: "HEX$",
+    0xFF9D: "VARPTR",
+    0xFF9E: "INSTR",
+    0xFF9F: "TIMER",
+    0xFFA0: "PPOINT",
+    0xFFA1: "STRING$",
 }
 
 # Merged tokens:
@@ -157,7 +154,8 @@ if __name__ == '__main__':
     # Generate Wiki Table for:
     # http://archive.worldofdragon.org/index.php?title=Tokens
 
-    print("""
+    print(
+        """
 * "CoCo A": - Tokens from Color BASIC 1.3
 * "CoCo B": - Additional tokens from Extended Color BASIC 1.1 only
 {| class="wikitable" style="font-family: monospace; background-color:#ffffcc;" cellpadding="10"
@@ -169,16 +167,17 @@ token
 token
 ! CoCo B
 token
-""")
+"""
+    )
     for value in values:
         coco_basic_statement = COCO_COLOR_BASIC_TOKENS.get(value, "")
         coco_extended_basic_statement = COCO_EXTENDED_COLOR_BASIC_TOKENS.get(value, "")
         dragon_statement = DRAGON32_BASIC_TOKENS.get(value, "")
 
-        if coco_basic_statement == "" and coco_extended_basic_statement=="" and dragon_statement == "":
+        if coco_basic_statement == coco_extended_basic_statement == dragon_statement == "":
             continue
 
-        if value > 0xff:
+        if value > 0xFF:
             value = "$%04x" % value
         else:
             value = "$%02x" % value
@@ -188,6 +187,6 @@ token
         print("| %s" % dragon_statement)
         print("| %s" % coco_basic_statement)
         print("| %s" % coco_extended_basic_statement)
-        
+
     print("|-")
     print("|}")

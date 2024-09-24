@@ -6,13 +6,12 @@ import logging
 import sys
 
 import rich_click as click
+from cli_base.autodiscover import import_all_files
+from cli_base.cli_tools.version_info import print_version
 from rich import print  # noqa
 from rich.console import Console
 from rich.traceback import install as rich_traceback_install
 from rich_click import RichGroup
-
-from cli_base.autodiscover import import_all_files
-from cli_base.cli_tools.version_info import print_version
 
 import dragonlib
 from dragonlib import constants

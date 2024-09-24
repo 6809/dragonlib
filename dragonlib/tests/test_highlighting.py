@@ -19,12 +19,15 @@ from dragonlib.dragon32.pygments_lexer import BasicLexer
 class TestHighlighting(unittest.TestCase):
     def test(self):
         lexer = BasicLexer()
-        listing='10 PRINT"FOO"'
+        listing = '10 PRINT"FOO"'
         tokensource = lexer.get_tokens(listing)
-        self.assertEqual(list(tokensource), [
-            (Token.Name.Label, '10'),
-            (Token.Text, ' '),
-            (Token.Name.Builtin, 'PRINT'),
-            (Token.Literal.String, '"FOO"'),
-            (Token.Text, '\n')
-        ])
+        self.assertEqual(
+            list(tokensource),
+            [
+                (Token.Name.Label, '10'),
+                (Token.Text, ' '),
+                (Token.Name.Builtin, 'PRINT'),
+                (Token.Literal.String, '"FOO"'),
+                (Token.Text, '\n'),
+            ],
+        )

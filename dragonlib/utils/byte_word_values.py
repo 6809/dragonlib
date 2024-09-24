@@ -14,34 +14,32 @@
 
 import string
 
-import six
-
 
 def signed5(x):
-    """ convert to signed 5-bit """
-    if x > 0xf: # 0xf == 2**4-1 == 15
-        x = x - 0x20 # 0x20 == 2**5 == 32
+    """convert to signed 5-bit"""
+    if x > 0xF:  # 0xf == 2**4-1 == 15
+        x = x - 0x20  # 0x20 == 2**5 == 32
     return x
 
 
 def signed8(x):
-    """ convert to signed 8-bit """
-    if x > 0x7f: # 0x7f ==  2**7-1 == 127
-        x = x - 0x100 # 0x100 == 2**8 == 256
+    """convert to signed 8-bit"""
+    if x > 0x7F:  # 0x7f ==  2**7-1 == 127
+        x = x - 0x100  # 0x100 == 2**8 == 256
     return x
 
 
 def unsigned8(x):
-    """ convert a signed 8-Bit value into a unsigned value """
+    """convert a signed 8-Bit value into a unsigned value"""
     if x < 0:
-        x = x + 0x0100 # 0x100 == 2**8 == 256
+        x = x + 0x0100  # 0x100 == 2**8 == 256
     return x
 
 
 def signed16(x):
-    """ convert to signed 16-bit """
-    if x > 0x7fff: # 0x7fff ==  2**15-1 == 32767
-        x = x - 0x10000 # 0x100 == 2**16 == 65536
+    """convert to signed 16-bit"""
+    if x > 0x7FFF:  # 0x7fff ==  2**15-1 == 32767
+        x = x - 0x10000  # 0x100 == 2**16 == 65536
     return x
 
 
@@ -58,8 +56,8 @@ def word2bytes(value):
     ...
     AssertionError
     """
-    assert 0 <= value <= 0xffff
-    return (value >> 8, value & 0xff)
+    assert 0 <= value <= 0xFFFF
+    return (value >> 8, value & 0xFF)
 
 
 def bytes2word(byte_list):
@@ -130,7 +128,7 @@ def bin2hexline(data, add_addr=True, width=16):
             line = []
 
         ascii_block = ""
-        for i in range(width):
+        for _ in range(width):
             b = data[addr]
 
             if chr(b) in printable:
@@ -162,8 +160,4 @@ def _bin2hexline_example():
 
 
 if __name__ == "__main__":
-    import doctest
-
-    print(doctest.testmod(verbose=0))
-
-    # _bin2hexline_example()
+    _bin2hexline_example()

@@ -7,14 +7,13 @@ import sys
 
 import rich_click as click
 from bx_py_utils.path import assert_is_file
+from cli_base.autodiscover import import_all_files
+from cli_base.cli_tools.dev_tools import run_coverage, run_tox, run_unittest_cli
+from cli_base.cli_tools.version_info import print_version
 from rich.console import Console
 from rich.traceback import install as rich_traceback_install
 from rich_click import RichGroup
 from typeguard import install_import_hook
-
-from cli_base.autodiscover import import_all_files
-from cli_base.cli_tools.dev_tools import run_coverage, run_tox, run_unittest_cli
-from cli_base.cli_tools.version_info import print_version
 
 import dragonlib
 from dragonlib import constants
