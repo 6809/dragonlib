@@ -11,38 +11,35 @@
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 
-from __future__ import absolute_import, division, print_function
 
 import string
 
-import six
-
 
 def signed5(x):
-    """ convert to signed 5-bit """
-    if x > 0xf: # 0xf == 2**4-1 == 15
-        x = x - 0x20 # 0x20 == 2**5 == 32
+    """convert to signed 5-bit"""
+    if x > 0xF:  # 0xf == 2**4-1 == 15
+        x = x - 0x20  # 0x20 == 2**5 == 32
     return x
 
 
 def signed8(x):
-    """ convert to signed 8-bit """
-    if x > 0x7f: # 0x7f ==  2**7-1 == 127
-        x = x - 0x100 # 0x100 == 2**8 == 256
+    """convert to signed 8-bit"""
+    if x > 0x7F:  # 0x7f ==  2**7-1 == 127
+        x = x - 0x100  # 0x100 == 2**8 == 256
     return x
 
 
 def unsigned8(x):
-    """ convert a signed 8-Bit value into a unsigned value """
+    """convert a signed 8-Bit value into a unsigned value"""
     if x < 0:
-        x = x + 0x0100 # 0x100 == 2**8 == 256
+        x = x + 0x0100  # 0x100 == 2**8 == 256
     return x
 
 
 def signed16(x):
-    """ convert to signed 16-bit """
-    if x > 0x7fff: # 0x7fff ==  2**15-1 == 32767
-        x = x - 0x10000 # 0x100 == 2**16 == 65536
+    """convert to signed 16-bit"""
+    if x > 0x7FFF:  # 0x7fff ==  2**15-1 == 32767
+        x = x - 0x10000  # 0x100 == 2**16 == 65536
     return x
 
 
@@ -59,8 +56,8 @@ def word2bytes(value):
     ...
     AssertionError
     """
-    assert 0 <= value <= 0xffff
-    return (value >> 8, value & 0xff)
+    assert 0 <= value <= 0xFFFF
+    return (value >> 8, value & 0xFF)
 
 
 def bytes2word(byte_list):
@@ -86,7 +83,7 @@ def bin2hexline(data, add_addr=True, width=16):
     0032 20 21 22 23 24 25 26 27 28 29 2a 2b 2c 2d 2e 2f  !"#$%&'()*+,-./
     0048 30 31 32 33 34 35 36 37 38 39 3a 3b 3c 3d 3e 3f 0123456789:;<=>?
     0064 40 41 42 43 44 45 46 47 48 49 4a 4b 4c 4d 4e 4f @ABCDEFGHIJKLMNO
-    0080 50 51 52 53 54 55 56 57 58 59 5a 5b 5c 5d 5e 5f PQRSTUVWXYZ[\]^_
+    0080 50 51 52 53 54 55 56 57 58 59 5a 5b 5c 5d 5e 5f PQRSTUVWXYZ[\\]^_
     0096 60 61 62 63 64 65 66 67 68 69 6a 6b 6c 6d 6e 6f `abcdefghijklmno
     0112 70 71 72 73 74 75 76 77 78 79 7a 7b 7c 7d 7e 7f pqrstuvwxyz{|}~.
     0128 80 81 82 83 84 85 86 87 88 89 8a 8b 8c 8d 8e 8f ................
@@ -99,7 +96,7 @@ def bin2hexline(data, add_addr=True, width=16):
     0240 f0 f1 f2 f3 f4 f5 f6 f7 f8 f9 fa fb fc fd fe ff ................
 
 
-    with open("C:\Python27\python.exe", "rb") as f:
+    with open("C:\\Python27\\python.exe", "rb") as f:
         data = f.read(150)
 
     print("\n".join(bin2hexline(data, width=16)))
@@ -131,7 +128,7 @@ def bin2hexline(data, add_addr=True, width=16):
             line = []
 
         ascii_block = ""
-        for i in range(width):
+        for _ in range(width):
             b = data[addr]
 
             if chr(b) in printable:
@@ -163,8 +160,4 @@ def _bin2hexline_example():
 
 
 if __name__ == "__main__":
-    import doctest
-
-    print(doctest.testmod(verbose=0))
-
-    # _bin2hexline_example()
+    _bin2hexline_example()

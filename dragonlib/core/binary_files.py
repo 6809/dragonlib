@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# encoding:utf8
 
 """
     dragonlib
@@ -10,12 +9,11 @@
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 
-from __future__ import absolute_import, division, print_function
 
 import logging
 import struct
 
-import six
+
 from dragonlib.utils.byte_word_values import bin2hexline
 from dragonlib.utils.logging_utils import log_bytes
 
@@ -23,9 +21,9 @@ from dragonlib.utils.logging_utils import log_bytes
 log = logging.getLogger(__name__)
 
 
-class BinaryFile(object):
+class BinaryFile:
     def __init__(self):
-        self.file_type = None # $01 == BAS | $02 == BIN
+        self.file_type = None  # $01 == BAS | $02 == BIN
         self.load_address = None
         self.length = None
         self.exec_address = None
@@ -43,9 +41,7 @@ class BinaryFile(object):
         if self.length is None:
             log.log(level, "Length: None")
         else:
-            log.log(level, "Length: $%04x (dez.: %i Bytes)",
-                self.length, self.length
-            )
+            log.log(level, "Length: $%04x (dez.: %i Bytes)", self.length, self.length)
         log.log(level, "Exec Address: %s", verbose_value(self.exec_address, fmt="$%04x"))
 
         if not self.data:
@@ -56,7 +52,8 @@ class BinaryFile(object):
                 log.log(level, line)
 
     def get_header(self):
-        header = struct.pack(">BBHHHB",
+        header = struct.pack(
+            ">BBHHHB",
             0x55,
             self.file_type,
             self.load_address,
@@ -71,10 +68,6 @@ class BinaryFile(object):
         # log_bytes(self.data, "data in hex: %s", level=logging.DEBUG)
         self.debug2log(level=logging.DEBUG)
         header = self.get_header()
-
-        if six.PY2:
-            return header + "".join([chr(i) for i in self.data])
-
         return header + self.data
 
     def load_DragonDosBinary(self, data, strip_padding=True):
@@ -121,7 +114,10 @@ class BinaryFile(object):
 
         log.debug(
             "File type: $%02X Load Address: $%04X Exec Address: $%04X Length: %iBytes",
-            self.file_type, self.load_address, self.exec_address, self.length
+            self.file_type,
+            self.load_address,
+            self.exec_address,
+            self.length,
         )
         if self.length != len(self.data):
             log.error("ERROR: Wrong data size: should be: %i Bytes but is %i Bytes!", self.length, len(self.data))

@@ -1,5 +1,3 @@
-# encoding:utf8
-
 """
     DragonPy - Dragon 32 emulator in Python
     =======================================
@@ -9,10 +7,8 @@
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 
-from __future__ import absolute_import, division, print_function
-
-
 import string
+
 
 def invert_shift(chars):
     """
@@ -27,10 +23,10 @@ def invert_shift(chars):
     result = ""
     for char in chars:
         if char in string.ascii_lowercase:
-#             log.critical("auto shift lowercase char %s to UPPERCASE", repr(char))
+            #             log.critical("auto shift lowercase char %s to UPPERCASE", repr(char))
             char = char.upper()
         elif char in string.ascii_uppercase:
-#             log.critical("auto shift UPPERCASE char %s to lowercase", repr(char))
+            #             log.critical("auto shift UPPERCASE char %s to lowercase", repr(char))
             char = char.lower()
         result += char
     return result
@@ -38,6 +34,9 @@ def invert_shift(chars):
 
 if __name__ == '__main__':
     import doctest
-    print(doctest.testmod(
-        # verbose=1
-    ))
+
+    print(
+        doctest.testmod(
+            # verbose=1
+        )
+    )

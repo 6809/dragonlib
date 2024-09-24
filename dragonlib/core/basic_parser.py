@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# encoding:utf8
 
 """
     BASIC parser
@@ -18,12 +17,10 @@
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 
-from __future__ import absolute_import, division, print_function
-
-
-import re
 
 import logging
+import re
+
 
 log = logging.getLogger(__name__)
 
@@ -34,12 +31,12 @@ CODE_TYPE_STRING = "STRING"
 CODE_TYPE_COMMENT = "COMMENT"
 
 
-class BaseCode(object):
+class BaseCode:
     def __init__(self, content):
         self.content = content
 
     def __repr__(self):
-        return "<%s:%s>" % (self.PART_TYPE, self.content)
+        return "<{}:{}>".format(self.PART_TYPE, self.content)
 
 
 class BASIC_Code(BaseCode):
@@ -62,6 +59,7 @@ class ParsedBASIC(dict):
     """
     Normal dict with special __repr__
     """
+
     def pformat(self):
         '''
         Manually pformat to force using """...""" and supress escaping apostrophe
@@ -72,9 +70,7 @@ class ParsedBASIC(dict):
         for line_no, code_objects in sorted(self.items()):
             result += '%s%i: [\n' % (indent1, line_no)
             for code_object in code_objects:
-                result += '%s"""<%s:%s>""",\n' % (
-                    indent2, code_object.PART_TYPE, code_object.content
-                )
+                result += '{}"""<{}:{}>""",\n'.format(indent2, code_object.PART_TYPE, code_object.content)
             result += '%s],\n' % indent1
         result += "}"
 
@@ -84,7 +80,7 @@ class ParsedBASIC(dict):
         return self.pformat()
 
 
-class BASICParser(object):
+class BASICParser:
     """
     Split BASIC sourcecode into:
         * line number
@@ -93,26 +89,27 @@ class BASICParser(object):
         * Strings
         * Comments
     """
+
     def __init__(self):
         self.regex_line_no = re.compile(
             # Split the line number from the code
-            "^\s*(?P<no>\d+)\s?(?P<content>.+)\s*$",
-            re.MULTILINE
+            r"^\s*(?P<no>\d+)\s?(?P<content>.+)\s*$",
+            re.MULTILINE,
         )
         self.regex_split_all = re.compile(
             # To split a code line for parse CODE, DATA, STRING or COMMENT
             r""" ( " | DATA | REM | ') """,
-            re.VERBOSE | re.MULTILINE
+            re.VERBOSE | re.MULTILINE,
         )
         self.regex_split_data = re.compile(
             # To consume the complete DATA until " or :
             r""" ( " | : ) """,
-            re.VERBOSE | re.MULTILINE
+            re.VERBOSE | re.MULTILINE,
         )
         self.regex_split_string = re.compile(
             # To consume a string
             r""" ( " ) """,
-            re.VERBOSE | re.MULTILINE
+            re.VERBOSE | re.MULTILINE,
         )
 
     def parse(self, ascii_listing):
@@ -220,15 +217,17 @@ class BASICParser(object):
 
 if __name__ == "__main__":
     import unittest
+
     from dragonlib.utils.logging_utils import setup_logging
 
-    setup_logging(log,
-#        level=1 # hardcore debug ;)
-#         level=10  # DEBUG
-#         level=20  # INFO
-        level=30  # WARNING
-#         level=40 # ERROR
-#         level=50 # CRITICAL/FATAL
+    setup_logging(
+        log,
+        #        level=1 # hardcore debug ;)
+        #         level=10  # DEBUG
+        #         level=20  # INFO
+        level=30,  # WARNING
+        #         level=40 # ERROR
+        #         level=50 # CRITICAL/FATAL
     )
 
     unittest.main(

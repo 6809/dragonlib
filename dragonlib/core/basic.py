@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# encoding:utf8
 
 """
     DragonPy - Dragon 32 emulator in Python
@@ -10,56 +9,44 @@
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 
-from __future__ import absolute_import, division, print_function
 
 import logging
 import re
 
 from dragonlib.core import basic_parser
-import six
-from dragonlib.utils.iter_utils import list_replace
-from dragonlib.utils.logging_utils import pformat_byte_hex_list, \
-    log_program_dump
 from dragonlib.utils.byte_word_values import word2bytes
+from dragonlib.utils.iter_utils import list_replace
+from dragonlib.utils.logging_utils import log_program_dump, pformat_byte_hex_list
 
 
 log = logging.getLogger(__name__)
 
 
-class BasicTokenUtil(object):
+class BasicTokenUtil:
     def __init__(self, basic_token_dict):
         self.basic_token_dict = basic_token_dict
-        self.ascii2token_dict = dict([
-            (code, token)
-            for token, code in list(basic_token_dict.items())
-        ])
+        self.ascii2token_dict = {code: token for token, code in list(basic_token_dict.items())}
 
-        regex = r"(%s)" % "|".join([
-            re.escape(statement)
-            for statement in sorted(list(self.basic_token_dict.values()), key=len, reverse=True)
-        ])
+        regex = r"(%s)" % "|".join(
+            [re.escape(statement) for statement in sorted(list(self.basic_token_dict.values()), key=len, reverse=True)]
+        )
         self.regex = re.compile(regex)
 
     def token2ascii(self, value):
         try:
             result = self.basic_token_dict[value]
         except KeyError:
-            if value > 0xff:
+            if value > 0xFF:
                 log.info("ERROR: Token $%04x is not in BASIC_TOKENS!", value)
                 return ""
             result = chr(value)
-        if six.PY2:
-            # Only for unittest, to avoid token representation as u"..."
-            # There is only ASCII characters possible
-            return str(result)
-        else:
-            return result
+        return result
 
     def tokens2ascii(self, values):
-        line=""
+        line = ""
         old_value = None
         for value in values:
-            if value == 0xff:
+            if value == 0xFF:
                 old_value = value
                 continue
             if old_value is not None:
@@ -87,9 +74,9 @@ class BasicTokenUtil(object):
             if part in self.ascii2token_dict:
                 new_token = self.ascii2token_dict[part]
                 log.info("\t%r -> %x", part, new_token)
-                if new_token > 0xff:
+                if new_token > 0xFF:
                     tokens.append(new_token >> 8)
-                    tokens.append(new_token & 0xff)
+                    tokens.append(new_token & 0xFF)
                 else:
                     tokens.append(new_token)
             else:
@@ -123,7 +110,7 @@ class BasicTokenUtil(object):
     def iter_token_values(self, tokens):
         token_value = None
         for token in tokens:
-            if token == 0xff:
+            if token == 0xFF:
                 token_value = token
                 continue
 
@@ -141,15 +128,15 @@ class BasicTokenUtil(object):
         result = []
         for token_value in self.iter_token_values(tokens):
             char = self.token2ascii(token_value)
-            if token_value > 0xff:
-                result.append("\t$%04x -> %s" % (token_value, repr(char)))
+            if token_value > 0xFF:
+                result.append("\t${:04x} -> {}".format(token_value, repr(char)))
             else:
-                result.append("\t  $%02x -> %s" % (token_value, repr(char)))
+                result.append("\t  ${:02x} -> {}".format(token_value, repr(char)))
 
         return result
 
 
-class BasicLine(object):
+class BasicLine:
     def __init__(self, token_util):
         self.token_util = token_util
         self.line_number = None
@@ -157,7 +144,7 @@ class BasicLine(object):
 
         try:
             colon_token = self.token_util.ascii2token_dict[":"]
-        except KeyError: # XXX: Always not defined as token?
+        except KeyError:  # XXX: Always not defined as token?
             colon_token = ord(":")
         rem_token = self.token_util.ascii2token_dict["'"]
         else_token = self.token_util.ascii2token_dict["ELSE"]
@@ -168,9 +155,7 @@ class BasicLine(object):
 
     def token_load(self, line_number, tokens):
         self.line_number = line_number
-        assert tokens[-1] == 0x00, "line code %s doesn't ends with \\x00: %s" % (
-            repr(tokens), repr(tokens[-1])
-        )
+        assert tokens[-1] == 0x00, "line code {} doesn't ends with \\x00: {}".format(repr(tokens), repr(tokens[-1]))
 
         """
         NOTE: The BASIC interpreter changed REM shortcut and ELSE
@@ -182,22 +167,18 @@ class BasicLine(object):
         http://archive.worldofdragon.org/phpBB3/viewtopic.php?f=8&t=4310&p=11632#p11630
         """
         for src, dst in self.tokens_replace_rules:
-            log.info("Relace tokens %s with $%02x",
-                pformat_byte_hex_list(src), dst
-            )
+            log.info("Relace tokens %s with $%02x", pformat_byte_hex_list(src), dst)
             log.debug("Before..: %s", pformat_byte_hex_list(tokens))
             tokens = list_replace(tokens, src, dst)
             log.debug("After...: %s", pformat_byte_hex_list(tokens))
 
-        self.line_code = tokens[:-1] # rstrip \x00
+        self.line_code = tokens[:-1]  # rstrip \x00
 
     def ascii_load(self, line_ascii):
         try:
             line_number, ascii_code = line_ascii.split(" ", 1)
         except ValueError as err:
-            msg = "Error split line number and code in line: %r (Origin error: %s)" % (
-                line_ascii, err
-            )
+            msg = "Error split line number and code in line: {!r} (Origin error: {})".format(line_ascii, err)
             raise ValueError(msg)
         self.line_number = int(line_number)
         self.line_code = self.token_util.ascii2token(ascii_code)
@@ -216,30 +197,30 @@ class BasicLine(object):
         # TODO: Use BASICParser to exclude string/comments etc.
         space = self.token_util.ascii2token(" ")[0]
 
-        to_split=self.token_util.basic_token_dict.copy()
-        dont_split_tokens=self.token_util.ascii2token(":()+-*/^<=>")
+        to_split = self.token_util.basic_token_dict.copy()
+        dont_split_tokens = self.token_util.ascii2token(":()+-*/^<=>")
 
         for token_value in dont_split_tokens:
             try:
-                del(to_split[token_value])
-            except KeyError: # e.g.: () are not tokens
+                del to_split[token_value]
+            except KeyError:  # e.g.: () are not tokens
                 pass
 
-        tokens=tuple(self.token_util.iter_token_values(self.line_code))
+        tokens = tuple(self.token_util.iter_token_values(self.line_code))
 
         temp = []
-        was_token=False
+        was_token = False
         for no, token in enumerate(tokens):
             try:
-                next_token=tokens[no+1]
+                next_token = tokens[no + 1]
             except IndexError:
-                next_token=None
+                next_token = None
 
             if token in to_split:
                 log.debug("X%sX" % to_split[token])
 
                 try:
-                    if temp[-1]!=space:
+                    if temp[-1] != space:
                         temp.append(space)
                 except IndexError:
                     pass
@@ -247,10 +228,10 @@ class BasicLine(object):
 
                 if not (next_token and next_token in dont_split_tokens):
                     temp.append(space)
-                was_token=True
+                was_token = True
             else:
-                if was_token and token==space:
-                    was_token=False
+                if was_token and token == space:
+                    was_token = False
                     continue
                 log.debug("Y%rY" % self.token_util.tokens2ascii([token]))
                 temp.append(token)
@@ -263,9 +244,8 @@ class BasicLine(object):
 
         self.line_code = temp
 
-
     def get_content(self, code=None):
-        if code is None: # start
+        if code is None:  # start
             code = self.line_code
 
         line = "%i " % self.line_number
@@ -274,16 +254,13 @@ class BasicLine(object):
         return line
 
     def __repr__(self):
-        return "%r: %s" % (self.get_content(), " ".join(["$%02x" % t for t in self.line_code]))
+        return "{!r}: {}".format(self.get_content(), " ".join(["$%02x" % t for t in self.line_code]))
 
     def log_line(self):
-        log.critical("%r:\n\t%s",
-            self.get_content(),
-            "\n\t".join(self.token_util.pformat_tokens(self.line_code))
-        )
+        log.critical("%r:\n\t%s", self.get_content(), "\n\t".join(self.token_util.pformat_tokens(self.line_code)))
 
 
-class BasicListing(object):
+class BasicListing:
     def __init__(self, basic_token_dict):
         self.token_util = BasicTokenUtil(basic_token_dict)
 
@@ -304,7 +281,7 @@ class BasicListing(object):
             log.debug("return: %s", repr(basic_lines))
             return basic_lines
 
-        assert next_address > program_start, "Next address $%04x not bigger than program start $%04x ?!?" % (
+        assert next_address > program_start, "Next address ${:04x} not bigger than program start ${:04x} ?!?".format(
             next_address, program_start
         )
 
@@ -330,11 +307,11 @@ class BasicListing(object):
             line_tokens = line.get_tokens() + [0x00]
 
             current_address += len(line_tokens) + 2
-            current_address_bytes = word2bytes(current_address) # e.g.: word2bytes(0xff09) -> (255, 9)
+            current_address_bytes = word2bytes(current_address)  # e.g.: word2bytes(0xff09) -> (255, 9)
 
             program_dump += bytearray(current_address_bytes)
 
-            if no == count: # It's the last line
+            if no == count:  # It's the last line
                 line_tokens += [0x00, 0x00]
             program_dump += bytearray(line_tokens)
 
@@ -357,9 +334,7 @@ class BasicListing(object):
         """
         if formated_dump is None:
             formated_dump = []
-            formated_dump.append(
-                "program start address: $%04x" % program_start
-            )
+            formated_dump.append("program start address: $%04x" % program_start)
 
         assert isinstance(program_dump, bytearray)
 
@@ -370,22 +345,21 @@ class BasicListing(object):
             next_address = (program_dump[0] << 8) + program_dump[1]
         except IndexError as err:
             raise IndexError(
-                "Can't get next address from: %s program start: $%04x (Origin error: %s)" % (
+                "Can't get next address from: {} program start: ${:04x} (Origin error: {})".format(
                     repr(program_dump), program_start, err
-            ))
+                )
+            )
 
         if next_address == 0x0000:
             formated_dump.append("$%04x -> end address" % next_address)
             return formated_dump
 
-        assert next_address > program_start, "Next address $%04x not bigger than program start $%04x ?!?" % (
+        assert next_address > program_start, "Next address ${:04x} not bigger than program start ${:04x} ?!?".format(
             next_address, program_start
         )
 
         length = next_address - program_start
-        formated_dump.append(
-            "$%04x -> next address (length: %i)" % (next_address, length)
-        )
+        formated_dump.append("$%04x -> next address (length: %i)" % (next_address, length))
         line_number = (program_dump[2] << 8) + program_dump[3]
         formated_dump.append("$%04x -> %i (line number)" % (line_number, line_number))
 
@@ -408,11 +382,9 @@ class BasicListing(object):
         self.debug_listing(basic_lines)
         return self.basic_lines2program_dump(basic_lines, program_start)
 
-
-#     def parsed_lines2program_dump(self, parsed_lines, program_start):
-#         for line_no, code_objects in sorted(parsed_lines.items()):
-#             for code_object in code_objects:
-
+    #     def parsed_lines2program_dump(self, parsed_lines, program_start):
+    #         for line_no, code_objects in sorted(parsed_lines.items()):
+    #             for code_object in code_objects:
 
     def program_dump2ascii_lines(self, dump, program_start):
         basic_lines = self.dump2basic_lines(dump, program_start)
@@ -423,26 +395,22 @@ class BasicListing(object):
         return ascii_lines
 
 
-class RenumTool(object):
+class RenumTool:
     """
     Renumber a BASIC program
     """
+
     def __init__(self, renum_regex):
-        self.line_no_regex = re.compile("(?P<no>\d+)(?P<code>.+)")
+        self.line_no_regex = re.compile(r"(?P<no>\d+)(?P<code>.+)")
         self.renum_regex = re.compile(renum_regex, re.VERBOSE)
 
     def renum(self, ascii_listing):
         self.renum_dict = self.create_renum_dict(ascii_listing)
-        log.info("renum: %s",
-            ", ".join([
-                "%s->%s" % (o, n)
-                for o, n in sorted(self.renum_dict.items())
-            ])
-        )
+        log.info("renum: %s", ", ".join(["{}->{}".format(o, n) for o, n in sorted(self.renum_dict.items())]))
         new_listing = []
         for new_number, line in enumerate(self._iter_lines(ascii_listing), 1):
             new_number *= 10
-            line = self.line_no_regex.sub("%s\g<code>" % new_number, line)
+            line = self.line_no_regex.sub(r"%s\g<code>" % new_number, line)
             new_line = self.renum_regex.sub(self.renum_inline, line)
             log.debug("%r -> %r", line, new_line)
             new_listing.append(new_line)
@@ -453,12 +421,11 @@ class RenumTool(object):
         returns all line numbers that are used in a jump.
         """
         self.destinations = set()
+
         def collect_destinations(matchobj):
             numbers = matchobj.group("no")
             if numbers:
-                self.destinations.update(set(
-                    [n.strip() for n in numbers.split(",")]
-                ))
+                self.destinations.update({n.strip() for n in numbers.split(",")})
 
         for line in self._iter_lines(ascii_listing):
             self.renum_regex.sub(collect_destinations, line)
@@ -468,22 +435,18 @@ class RenumTool(object):
     def _iter_lines(self, ascii_listing):
         lines = ascii_listing.splitlines()
         lines = [line.strip() for line in lines if line.strip()]
-        for line in lines:
-            yield line
+        yield from lines
 
     def _get_new_line_number(self, line, old_number):
         try:
             new_number = "%s" % self.renum_dict[old_number]
         except KeyError:
-            log.error(
-                "Error in line '%s': line no. '%s' doesn't exist.",
-                line, old_number
-            )
+            log.error("Error in line '%s': line no. '%s' doesn't exist.", line, old_number)
             new_number = old_number
         return new_number
 
     def renum_inline(self, matchobj):
-#         log.critical(matchobj.groups())
+        #         log.critical(matchobj.groups())
         old_numbers = matchobj.group("no")
         if old_numbers[-1] == " ":
             # e.g.: space before comment: ON X GOTO 1,2 ' Comment
@@ -491,15 +454,8 @@ class RenumTool(object):
         else:
             space_after = ""
         old_numbers = [n.strip() for n in old_numbers.split(",")]
-        new_numbers = [
-            self._get_new_line_number(matchobj.group(0), old_number)
-            for old_number in old_numbers
-        ]
-        return "".join([
-            matchobj.group("statement"),
-            matchobj.group("space"),
-            ",".join(new_numbers), space_after
-        ])
+        new_numbers = [self._get_new_line_number(matchobj.group(0), old_number) for old_number in old_numbers]
+        return "".join([matchobj.group("statement"), matchobj.group("space"), ",".join(new_numbers), space_after])
 
     def create_renum_dict(self, ascii_listing):
         old_numbers = [match[0] for match in self.line_no_regex.findall(ascii_listing)]
@@ -537,16 +493,17 @@ def _test_reformat():
     from dragonlib.utils.logging_utils import setup_logging
 
     setup_logging(
-#        level=1 # hardcore debug ;)
-#         level=10  # DEBUG
-#         level=20  # INFO
-#         level=30  # WARNING
-#         level=40 # ERROR
-#         level=50 # CRITICAL/FATAL
+        #        level=1 # hardcore debug ;)
+        #         level=10  # DEBUG
+        #         level=20  # INFO
+        #         level=30  # WARNING
+        #         level=40 # ERROR
+        #         level=50 # CRITICAL/FATAL
         level=99
     )
 
     from dragonlib.api import Dragon32API
+
     api = Dragon32API()
 
     # filepath = os.path.join(os.path.abspath(os.path.dirname(__file__)),
@@ -557,16 +514,15 @@ def _test_reformat():
     # with open(filepath, "r") as f:
     #     listing_ascii = f.read()
 
-    listing_ascii="""\
+    listing_ascii = """\
 10 ONPOINT(Y,K)GOTO250,250'ONPOINT(Y,K)GOTO250,250
 20 FORT=479TO 542:T(T)=0:Y(T)=28:NEXT
 30 I=I+1:PRINT"FORX=1TO 2:Y(Y)=0:NEXT"
 730 CLS:PRINT"FIXME: PLEASE WAIT [           ]";
 """
 
-    print(
-        api.reformat_ascii_listing(listing_ascii)
-    )
+    print(api.reformat_ascii_listing(listing_ascii))
+
 
 if __name__ == "__main__":
     # _test_renum()

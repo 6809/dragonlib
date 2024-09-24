@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# encoding:utf8
 
 """
     DragonPy - Dragon 32 emulator in Python
@@ -10,31 +9,29 @@
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 
-from __future__ import absolute_import, division, print_function
 
-import six
 import logging
 
 from dragonlib.CoCo.basic_tokens import COCO_BASIC_TOKENS
-from dragonlib.core.basic import BasicListing, RenumTool, BasicTokenUtil,\
-    BasicLine
+from dragonlib.core.basic import BasicLine, BasicListing, BasicTokenUtil, RenumTool
 from dragonlib.core.basic_parser import BASICParser
 from dragonlib.core.binary_files import BinaryFile
 from dragonlib.dragon32.basic_tokens import DRAGON32_BASIC_TOKENS
 from dragonlib.utils.logging_utils import log_bytes
 
-log=logging.getLogger(__name__)
+
+log = logging.getLogger(__name__)
 
 
 DRAGON32 = "Dragon32"
 COCO2B = "CoCo"
 
 
-class BaseAPI(object):
+class BaseAPI:
     RENUM_REGEX = r"""
         (?P<statement> GOTO|GOSUB|THEN|ELSE ) (?P<space>\s*) (?P<no>[\d*,\s*]+)
     """
-    
+
     def __init__(self):
         self.listing = BasicListing(self.BASIC_TOKENS)
         self.renum_tool = RenumTool(self.RENUM_REGEX)
@@ -51,14 +48,12 @@ class BaseAPI(object):
         if program_start is None:
             program_start = self.DEFAULT_PROGRAM_START
         return self.listing.program_dump2ascii_lines(dump, program_start)
-    
+
     def parse_ascii_listing(self, basic_program_ascii):
         parser = BASICParser()
         parsed_lines = parser.parse(basic_program_ascii)
         if not parsed_lines:
-            log.critical("No parsed lines %s from %s ?!?" % (
-                repr(parsed_lines), repr(basic_program_ascii)
-            ))
+            log.critical("No parsed lines {} from {} ?!?".format(repr(parsed_lines), repr(basic_program_ascii)))
         log.debug("Parsed BASIC: %s", repr(parsed_lines))
         return parsed_lines
 
@@ -68,7 +63,7 @@ class BaseAPI(object):
         basic_lines = []
         for line_no, code_objects in sorted(parsed_lines.items()):
             basic_line = BasicLine(self.token_util)
-            basic_line.code_objects_load(line_no,code_objects)
+            basic_line.code_objects_load(line_no, code_objects)
             basic_lines.append(basic_line)
 
         return basic_lines
@@ -84,9 +79,9 @@ class BaseAPI(object):
 
         basic_lines = self.ascii_listing2basic_lines(basic_program_ascii, program_start)
 
-        program_dump=self.listing.basic_lines2program_dump(basic_lines, program_start)
-        assert isinstance(program_dump, bytearray), (
-            "is type: %s and not bytearray: %s" % (type(program_dump), repr(program_dump))
+        program_dump = self.listing.basic_lines2program_dump(basic_lines, program_start)
+        assert isinstance(program_dump, bytearray), "is type: {} and not bytearray: {}".format(
+            type(program_dump), repr(program_dump)
         )
         return program_dump
 
@@ -120,7 +115,7 @@ class BaseAPI(object):
             print()
             print(line_no, code_objects)
             basic_line = BasicLine(self.token_util)
-            basic_line.code_objects_load(line_no,code_objects)
+            basic_line.code_objects_load(line_no, code_objects)
 
             print(basic_line)
             basic_line.reformat()
@@ -145,7 +140,8 @@ class BaseAPI(object):
         log_bytes(tokenised_dump, msg="tokenised: %s")
 
         binary_file = BinaryFile()
-        binary_file.load_tokenised_dump(tokenised_dump,
+        binary_file.load_tokenised_dump(
+            tokenised_dump,
             load_address=load_address,
             exec_address=exec_address,
         )
@@ -171,15 +167,13 @@ class BaseAPI(object):
         if binary_file.file_type != 0x01:
             log.error("ERROR: file type $%02X is not $01 (tokenised BASIC)!", binary_file.file_type)
 
-        ascii_lines = self.program_dump2ascii_lines(dump=binary_file.data,
+        ascii_lines = self.program_dump2ascii_lines(
+            dump=binary_file.data,
             # FIXME:
-            #program_start=bin.exec_address
-            program_start=binary_file.load_address
+            # program_start=bin.exec_address
+            program_start=binary_file.load_address,
         )
         return "\n".join(ascii_lines)
-
-
-
 
 
 class Dragon32API(BaseAPI):
@@ -200,6 +194,7 @@ class CoCoAPI(Dragon32API):
     """
     http://sourceforge.net/p/toolshed/code/ci/default/tree/cocoroms/dragon_equivs.asm
     """
+
     CONFIG_NAME = COCO2B
     MACHINE_NAME = "CoCo"
     BASIC_TOKENS = COCO_BASIC_TOKENS
@@ -208,26 +203,26 @@ class CoCoAPI(Dragon32API):
 def example_renum_ascii_listing():
     api = Dragon32API()
 
-    ascii_listing="\n".join([
-        '1 PRINT "LINE 10"',
-        '2 PRINT "LINE 20"',
-        '3 GOTO 1',
-    ])
-    print(
-        api.renum_ascii_listing(ascii_listing)
+    ascii_listing = "\n".join(
+        [
+            '1 PRINT "LINE 10"',
+            '2 PRINT "LINE 20"',
+            '3 GOTO 1',
+        ]
     )
+    print(api.renum_ascii_listing(ascii_listing))
 
 
 def test_bin2bas():
     api = Dragon32API()
 
     with open(os.path.expanduser("~/DragonEnvPy3/DwRoot/AUTOLOAD.DWL"), "rb") as f:
-        data1=f.read()
+        data1 = f.read()
 
-    ascii_listing=api.bin2bas(data1)
+    ascii_listing = api.bin2bas(data1)
     print(ascii_listing)
 
-    data2 = api.bas2bin(ascii_listing, load_address=0x1e01, exec_address=0x1e01)
+    data2 = api.bas2bin(ascii_listing, load_address=0x1E01, exec_address=0x1E01)
 
     log_bytes(data1, "data1: %s", level=logging.CRITICAL)
     log_bytes(data2, "data2: %s", level=logging.CRITICAL)
@@ -235,18 +230,18 @@ def test_bin2bas():
 
 if __name__ == '__main__':
     import os
+
     from dragonlib.utils.logging_utils import setup_logging
 
     setup_logging(
-#         level=1 # hardcore debug ;)
-#         level=10  # DEBUG
-#         level=20  # INFO
+        #         level=1 # hardcore debug ;)
+        #         level=10  # DEBUG
+        #         level=20  # INFO
         level=30  # WARNING
-#         level=40 # ERROR
-#         level=50 # CRITICAL/FATAL
-#         level=99
+        #         level=40 # ERROR
+        #         level=50 # CRITICAL/FATAL
+        #         level=99
     )
 
     # example_renum_ascii_listing()
     test_bin2bas()
-

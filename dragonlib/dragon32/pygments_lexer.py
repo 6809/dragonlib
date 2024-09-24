@@ -1,5 +1,3 @@
-# encoding:utf8
-
 """
     DragonLib - needful python modules for Dragon/CoCo stuff
     ========================================================
@@ -9,22 +7,19 @@
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 
-from __future__ import absolute_import, division, print_function
-
 import re
 from collections import namedtuple
 
 from pygments.lexer import RegexLexer
 from pygments.styles import get_style_by_name
-from pygments.token import Text, Comment, Operator, Keyword, Name, String, \
-    Number, Punctuation
-
+from pygments.token import Comment, Keyword, Name, Number, Operator, Punctuation, String, Text
 
 
 class BasicLexer(RegexLexer):
     """
     Pygments lexer for Dragon/CoCo BASIC
     """
+
     name = 'Dragon/CoCo BASIC'
     aliases = ['basic']
     filenames = ['*.bas']
@@ -32,44 +27,36 @@ class BasicLexer(RegexLexer):
     tokens = {
         'root': [
             (r"(REM|').*\n", Comment.Single),
-
             (r'\s+', Text),
             (r'^\d+', Name.Label),
-
-
             (
                 r'RUN|RESTORE|STOP|RENUM|'
                 r'GOTO|'
                 r'OPEN|CLOSE|READ|CLOAD|CSAVE|DLOAD|LLIST|MOTOR|SKIPF|'
                 r'LIST|CLEAR|NEW|EXEC|DEL|EDIT|TRON|TROFF',
-                Keyword
+                Keyword,
             ),
             (
-                r'SOUND|AUDIOLINE|PLAY|'
-                r'PCLS|PSET|SCREEN|PCLEAR|COLOR|CIRCLE|PAINT|GET|PUT|DRAW|PCOPY|PMODE',
-                Keyword.Reserved
+                r'SOUND|AUDIOLINE|PLAY|' r'PCLS|PSET|SCREEN|PCLEAR|COLOR|CIRCLE|PAINT|GET|PUT|DRAW|PCOPY|PMODE',
+                Keyword.Reserved,
             ),
             (r'DATA|DIM|LET|DEF', Keyword.Declaration),
-
             (
                 r'PRINT|CLS|INPUT|INKEY$|'
                 r'HEX$|LEFT$|RIGHT$|MID$|STRING$|STR$|CHR$|'
                 r'SGN|INT|ABS|POS|RND|SQR|LOG|EXP|SIN|COS|TAN|ATN|LEN|VAL|ASC',
-                Name.Builtin
+                Name.Builtin,
             ),
-
             (
                 r'FOR|TO|STEP|NEXT|IF|THEN|ELSE|RETURN|'
                 r'GOSUB|'
                 r'POKE|PEEK|'
                 r'ON|END|CONT|SET|RESET|PRESET|TAB|SUB|FN|OFF|'
                 r'USING|EOF|JOYSTK|FIX|POINT|MEM|VARPTR|INSTR|TIMER|PPOINT|USR',
-                Name.Function
+                Name.Function,
             ),
-
             (r'([+\-*/^>=<])', Operator),
             (r'AND|OR|NOT', Operator.Word),
-
             (r'"[^"\n]*.', String),
             (r'\d+|[-+]?\d*\.\d*(e[-+]?\d+)?', Number.Float),
             (r'[(),:]', Punctuation),
@@ -105,7 +92,7 @@ def list_styles(style_name):
     for ndef, ttypes in existing_styles.items():
         print(ndef)
         for ttype in sorted(ttypes):
-            print("\t%s" % str(ttype).split("Token.",1)[1])
+            print(f'\t{ttype}')
 
 
 if __name__ == "__main__":
