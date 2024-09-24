@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# encoding:utf-8
 
 """
     iter utilities
@@ -9,16 +8,12 @@
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 
-from __future__ import absolute_import, division, print_function
 
 import six
 
 
 # Obsolete if http://legacy.python.org/dev/peps/pep-0467/ merged:
-if six.PY2:
-    iter_bytes = lambda data: (ord(b) for b in data)
-else:
-    iter_bytes = iter
+iter_bytes = iter
 
 
 def list_replace(iterable, src, dst):

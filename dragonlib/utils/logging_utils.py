@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# encoding:utf-8
 
 """
     loggin utilities
@@ -10,11 +9,10 @@
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 
-from __future__ import absolute_import, division, print_function
 import six
 from dragonlib.utils.byte_word_values import bin2hexline
 
-xrange = six.moves.xrange
+xrange = range
 
 import logging
 import sys
@@ -108,7 +106,7 @@ def log_memory_dump(memory, start, end, mem_info, level=99):
         if isinstance(value, int):
             msg = "$%04x: $%02x (dez: %i)" % (addr, value, value)
         else:
-            msg = "$%04x: %s (is type: %s)" % (addr, repr(value), type(value))
+            msg = "${:04x}: {} (is type: {})".format(addr, repr(value), type(value))
         msg = "%-25s| %s" % (
             msg, mem_info.get_shortest(addr)
         )
@@ -127,7 +125,7 @@ def pformat_word_hex_list(hex_list):
 def log_hexlist(byte_list, group=8, start=0x0000, level=99):
     def _log(level, addr, line):
         msg = pformat_byte_hex_list(line)
-        msg = "%04x - %s" % (addr, msg)
+        msg = "{:04x} - {}".format(addr, msg)
         log.log(level, msg)
 
     pos = 0

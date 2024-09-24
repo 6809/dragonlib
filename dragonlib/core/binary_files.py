@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# encoding:utf8
 
 """
     dragonlib
@@ -10,7 +9,6 @@
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 
-from __future__ import absolute_import, division, print_function
 
 import logging
 import struct
@@ -23,7 +21,7 @@ from dragonlib.utils.logging_utils import log_bytes
 log = logging.getLogger(__name__)
 
 
-class BinaryFile(object):
+class BinaryFile:
     def __init__(self):
         self.file_type = None # $01 == BAS | $02 == BIN
         self.load_address = None

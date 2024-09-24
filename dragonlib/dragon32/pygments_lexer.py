@@ -1,5 +1,3 @@
-# encoding:utf8
-
 """
     DragonLib - needful python modules for Dragon/CoCo stuff
     ========================================================
@@ -9,7 +7,6 @@
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 
-from __future__ import absolute_import, division, print_function
 
 import re
 from collections import namedtuple

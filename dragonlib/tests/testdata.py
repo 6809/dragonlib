@@ -1,5 +1,3 @@
-# encoding:utf8
-
 """
     DragonLib unittests
     ===================
@@ -11,7 +9,6 @@
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 
-from __future__ import absolute_import, division, print_function
 
 LISTING_01= ('10 PRINT',)
 LISTING_01_BIN = ( # program address: $1234 !

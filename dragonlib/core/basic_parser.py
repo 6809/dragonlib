@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# encoding:utf8
 
 """
     BASIC parser
@@ -18,7 +17,6 @@
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 
-from __future__ import absolute_import, division, print_function
 
 
 import re
@@ -34,12 +32,12 @@ CODE_TYPE_STRING = "STRING"
 CODE_TYPE_COMMENT = "COMMENT"
 
 
-class BaseCode(object):
+class BaseCode:
     def __init__(self, content):
         self.content = content
 
     def __repr__(self):
-        return "<%s:%s>" % (self.PART_TYPE, self.content)
+        return "<{}:{}>".format(self.PART_TYPE, self.content)
 
 
 class BASIC_Code(BaseCode):
@@ -72,7 +70,7 @@ class ParsedBASIC(dict):
         for line_no, code_objects in sorted(self.items()):
             result += '%s%i: [\n' % (indent1, line_no)
             for code_object in code_objects:
-                result += '%s"""<%s:%s>""",\n' % (
+                result += '{}"""<{}:{}>""",\n'.format(
                     indent2, code_object.PART_TYPE, code_object.content
                 )
             result += '%s],\n' % indent1
@@ -84,7 +82,7 @@ class ParsedBASIC(dict):
         return self.pformat()
 
 
-class BASICParser(object):
+class BASICParser:
     """
     Split BASIC sourcecode into:
         * line number
@@ -96,7 +94,7 @@ class BASICParser(object):
     def __init__(self):
         self.regex_line_no = re.compile(
             # Split the line number from the code
-            "^\s*(?P<no>\d+)\s?(?P<content>.+)\s*$",
+            r"^\s*(?P<no>\d+)\s?(?P<content>.+)\s*$",
             re.MULTILINE
         )
         self.regex_split_all = re.compile(

@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# encoding:utf8
 
 """
     DragonPy - Dragon 32 emulator in Python
@@ -10,7 +9,6 @@
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 
-from __future__ import absolute_import, division, print_function
 
 import six
 import logging
@@ -30,7 +28,7 @@ DRAGON32 = "Dragon32"
 COCO2B = "CoCo"
 
 
-class BaseAPI(object):
+class BaseAPI:
     RENUM_REGEX = r"""
         (?P<statement> GOTO|GOSUB|THEN|ELSE ) (?P<space>\s*) (?P<no>[\d*,\s*]+)
     """
@@ -56,7 +54,7 @@ class BaseAPI(object):
         parser = BASICParser()
         parsed_lines = parser.parse(basic_program_ascii)
         if not parsed_lines:
-            log.critical("No parsed lines %s from %s ?!?" % (
+            log.critical("No parsed lines {} from {} ?!?".format(
                 repr(parsed_lines), repr(basic_program_ascii)
             ))
         log.debug("Parsed BASIC: %s", repr(parsed_lines))
@@ -86,7 +84,7 @@ class BaseAPI(object):
 
         program_dump=self.listing.basic_lines2program_dump(basic_lines, program_start)
         assert isinstance(program_dump, bytearray), (
-            "is type: %s and not bytearray: %s" % (type(program_dump), repr(program_dump))
+            "is type: {} and not bytearray: {}".format(type(program_dump), repr(program_dump))
         )
         return program_dump
 

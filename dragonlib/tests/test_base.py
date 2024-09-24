@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# encoding:utf-8
 
 """
     Dragon Lib unittests
@@ -10,7 +9,6 @@
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 
-from __future__ import absolute_import, division, print_function
 import textwrap
 
 import unittest
@@ -32,7 +30,7 @@ class BaseTestCase(unittest.TestCase):
         first = "$%x" % hex1
         second = "$%x" % hex2
         if msg is None:
-            msg = "%s != %s" % (first, second)
+            msg = "{} != {}".format(first, second)
         self.assertEqual(first, second, msg)
 
     def assertIsByteRange(self, value):
@@ -49,7 +47,7 @@ class BaseTestCase(unittest.TestCase):
         first = "$%02x" % hex1
         second = "$%02x" % hex2
         if msg is None:
-            msg = "%s != %s" % (first, second)
+            msg = "{} != {}".format(first, second)
         self.assertEqual(first, second, msg)
 
     def assertEqualHexWord(self, hex1, hex2, msg=None):
@@ -58,7 +56,7 @@ class BaseTestCase(unittest.TestCase):
         first = "$%04x" % hex1
         second = "$%04x" % hex2
         if msg is None:
-            msg = "%s != %s" % (first, second)
+            msg = "{} != {}".format(first, second)
         self.assertEqual(first, second, msg)
 
     def assertBinEqual(self, bin1, bin2, msg=None, width=16):

@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# encoding:utf-8
 
 """
     Dragon Lib unittests
@@ -10,7 +9,6 @@
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 
-from __future__ import absolute_import, division, print_function
 
 import os
 import textwrap
@@ -133,7 +131,7 @@ class BaseDragon32ApiTestCase(BaseTestCase):
 
 class Dragon32BASIC_LowLevel_ApiTest(BaseDragon32ApiTestCase):
     def setUp(self):
-        super(Dragon32BASIC_LowLevel_ApiTest, self).setUp()
+        super().setUp()
         self.token_util = self.dragon32api.listing.token_util
         self.basic_line = BasicLine(self.token_util)
 

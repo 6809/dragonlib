@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# encoding:utf8
 
 """
     DragonPy - Dragon 32 emulator in Python
@@ -10,7 +9,6 @@
     :license: GNU GPL v3 or above, see LICENSE for more details.
 """
 
-from __future__ import absolute_import, division, print_function
 
 import logging
 import re
@@ -26,13 +24,13 @@ from dragonlib.utils.byte_word_values import word2bytes
 log = logging.getLogger(__name__)
 
 
-class BasicTokenUtil(object):
+class BasicTokenUtil:
     def __init__(self, basic_token_dict):
         self.basic_token_dict = basic_token_dict
-        self.ascii2token_dict = dict([
-            (code, token)
+        self.ascii2token_dict = {
+            code: token
             for token, code in list(basic_token_dict.items())
-        ])
+        }
 
         regex = r"(%s)" % "|".join([
             re.escape(statement)
@@ -48,12 +46,7 @@ class BasicTokenUtil(object):
                 log.info("ERROR: Token $%04x is not in BASIC_TOKENS!", value)
                 return ""
             result = chr(value)
-        if six.PY2:
-            # Only for unittest, to avoid token representation as u"..."
-            # There is only ASCII characters possible
-            return str(result)
-        else:
-            return result
+        return result
 
     def tokens2ascii(self, values):
         line=""
@@ -142,14 +135,14 @@ class BasicTokenUtil(object):
         for token_value in self.iter_token_values(tokens):
             char = self.token2ascii(token_value)
             if token_value > 0xff:
-                result.append("\t$%04x -> %s" % (token_value, repr(char)))
+                result.append("\t${:04x} -> {}".format(token_value, repr(char)))
             else:
-                result.append("\t  $%02x -> %s" % (token_value, repr(char)))
+                result.append("\t  ${:02x} -> {}".format(token_value, repr(char)))
 
         return result
 
 
-class BasicLine(object):
+class BasicLine:
     def __init__(self, token_util):
         self.token_util = token_util
         self.line_number = None
@@ -168,7 +161,7 @@ class BasicLine(object):
 
     def token_load(self, line_number, tokens):
         self.line_number = line_number
-        assert tokens[-1] == 0x00, "line code %s doesn't ends with \\x00: %s" % (
+        assert tokens[-1] == 0x00, "line code {} doesn't ends with \\x00: {}".format(
             repr(tokens), repr(tokens[-1])
         )
 
@@ -195,7 +188,7 @@ class BasicLine(object):
         try:
             line_number, ascii_code = line_ascii.split(" ", 1)
         except ValueError as err:
-            msg = "Error split line number and code in line: %r (Origin error: %s)" % (
+            msg = "Error split line number and code in line: {!r} (Origin error: {})".format(
                 line_ascii, err
             )
             raise ValueError(msg)
@@ -274,7 +267,7 @@ class BasicLine(object):
         return line
 
     def __repr__(self):
-        return "%r: %s" % (self.get_content(), " ".join(["$%02x" % t for t in self.line_code]))
+        return "{!r}: {}".format(self.get_content(), " ".join(["$%02x" % t for t in self.line_code]))
 
     def log_line(self):
         log.critical("%r:\n\t%s",
@@ -283,7 +276,7 @@ class BasicLine(object):
         )
 
 
-class BasicListing(object):
+class BasicListing:
     def __init__(self, basic_token_dict):
         self.token_util = BasicTokenUtil(basic_token_dict)
 
@@ -304,7 +297,7 @@ class BasicListing(object):
             log.debug("return: %s", repr(basic_lines))
             return basic_lines
 
-        assert next_address > program_start, "Next address $%04x not bigger than program start $%04x ?!?" % (
+        assert next_address > program_start, "Next address ${:04x} not bigger than program start ${:04x} ?!?".format(
             next_address, program_start
         )
 
@@ -370,7 +363,7 @@ class BasicListing(object):
             next_address = (program_dump[0] << 8) + program_dump[1]
         except IndexError as err:
             raise IndexError(
-                "Can't get next address from: %s program start: $%04x (Origin error: %s)" % (
+                "Can't get next address from: {} program start: ${:04x} (Origin error: {})".format(
                     repr(program_dump), program_start, err
             ))
 
@@ -378,7 +371,7 @@ class BasicListing(object):
             formated_dump.append("$%04x -> end address" % next_address)
             return formated_dump
 
-        assert next_address > program_start, "Next address $%04x not bigger than program start $%04x ?!?" % (
+        assert next_address > program_start, "Next address ${:04x} not bigger than program start ${:04x} ?!?".format(
             next_address, program_start
         )
 
@@ -423,26 +416,26 @@ class BasicListing(object):
         return ascii_lines
 
 
-class RenumTool(object):
+class RenumTool:
     """
     Renumber a BASIC program
     """
     def __init__(self, renum_regex):
-        self.line_no_regex = re.compile("(?P<no>\d+)(?P<code>.+)")
+        self.line_no_regex = re.compile(r"(?P<no>\d+)(?P<code>.+)")
         self.renum_regex = re.compile(renum_regex, re.VERBOSE)
 
     def renum(self, ascii_listing):
         self.renum_dict = self.create_renum_dict(ascii_listing)
         log.info("renum: %s",
             ", ".join([
-                "%s->%s" % (o, n)
+                "{}->{}".format(o, n)
                 for o, n in sorted(self.renum_dict.items())
             ])
         )
         new_listing = []
         for new_number, line in enumerate(self._iter_lines(ascii_listing), 1):
             new_number *= 10
-            line = self.line_no_regex.sub("%s\g<code>" % new_number, line)
+            line = self.line_no_regex.sub(r"%s\g<code>" % new_number, line)
             new_line = self.renum_regex.sub(self.renum_inline, line)
             log.debug("%r -> %r", line, new_line)
             new_listing.append(new_line)
@@ -456,9 +449,9 @@ class RenumTool(object):
         def collect_destinations(matchobj):
             numbers = matchobj.group("no")
             if numbers:
-                self.destinations.update(set(
-                    [n.strip() for n in numbers.split(",")]
-                ))
+                self.destinations.update({
+                    n.strip() for n in numbers.split(",")
+                })
 
         for line in self._iter_lines(ascii_listing):
             self.renum_regex.sub(collect_destinations, line)
@@ -468,8 +461,7 @@ class RenumTool(object):
     def _iter_lines(self, ascii_listing):
         lines = ascii_listing.splitlines()
         lines = [line.strip() for line in lines if line.strip()]
-        for line in lines:
-            yield line
+        yield from lines
 
     def _get_new_line_number(self, line, old_number):
         try:
